@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         key: 'id'
       }
     }
-  });
+  }, {schema: 'auxiliary'});
 
   return UserEstate;
 };

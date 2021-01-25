@@ -9,6 +9,6 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     }
-  });
+  }, {schema: 'auxiliary'});
   return User;
 };

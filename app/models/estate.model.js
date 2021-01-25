@@ -6,7 +6,7 @@ module.exports = (sequelize, Sequelize) => {
     address: {
       type: Sequelize.STRING
     }
-  }, {});
+  }, {schema: 'auxiliary'});
 
   return Estate;
 };
