@@ -22,6 +22,9 @@ db.sequelize = sequelize;
 db.User = require("./user.model.js")(sequelize, Sequelize);
 db.Estate = require("./estate.model.js")(sequelize, Sequelize);
 db.UserEstate = require("./user_estate.model.js")(sequelize, Sequelize);
+db.CategoryPics = require("./category_pics.model")(sequelize, Sequelize);
+db.Category = require("./category.model")(sequelize, Sequelize);
+db.Years = require("./years.model")(sequelize, Sequelize);
 
 db.Estate.belongsToMany( db.User, {
   through: 'user_estates',
@@ -35,6 +38,10 @@ db.User.belongsToMany( db.Estate, {
   as: 'estates',
   foreignKey: 'id_user',
   targetKey: 'id'
+});
+
+db.CategoryPics.belongsTo(db.Years, {
+  foreignKey: 'year_code'
 });
 
 module.exports = db;

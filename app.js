@@ -5,7 +5,7 @@ const cors = require("cors");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:4200"
 };
 
 app.use(cors(corsOptions));
@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 require("./app/routes/user.routes")(app);
 require("./app/routes/estate.routes")(app);
+require("./app/routes/category.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

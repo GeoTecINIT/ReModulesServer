@@ -31,7 +31,7 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
 
   const name = req.query.name;
-  var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+  const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
 
   User.findAll({ where: condition })
     .then(data => {

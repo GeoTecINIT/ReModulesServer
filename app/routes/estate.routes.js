@@ -5,7 +5,9 @@ module.exports = app => {
 
   router.post("/", user.create);
 
-  router.get("/:id", user.findHistoryByUser);
+  router.get("/user/:id", user.findHistoryByUser);
+
+  router.get("/uses/", user.getUses);
 
   app.use('/api/history', router);
 };

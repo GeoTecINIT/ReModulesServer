@@ -14,7 +14,12 @@ exports.create = (req, res) => {
   }
   const estateToSave = {
     rc: req.body.rc,
-    address: req.body.address
+    address: req.body.address,
+    lat: req.body.lat,
+    lng: req.body.lng,
+    year: req.body.year,
+    use: req.body.use,
+    surface: req.body.surface
   };
 
   Users.findOne({ where: { uid: req.body.uid}}).then( user => {
@@ -74,6 +79,19 @@ exports.findHistoryByUser = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving user."
+      });
+    });
+};
+
+exports.getUses = (req, res) => {
+  Estate.aggregate('use', 'DISTINCT', { plain: false})
+    .then( data =>{
+      res.send(data);
+    })
+    .catch( err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving uses."
       });
     });
 };
