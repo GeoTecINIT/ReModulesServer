@@ -1,7 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
   return sequelize.define("estates", {
     rc: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      primaryKey: true
     },
     address: {
       type: Sequelize.STRING

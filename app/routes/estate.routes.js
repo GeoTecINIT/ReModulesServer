@@ -9,5 +9,7 @@ module.exports = app => {
 
   router.get("/uses/", user.getUses);
 
+  router.delete("/prop/:rc/user/:user", user.deletePropFromHistory)
+
   app.use('/api/history', router);
 };

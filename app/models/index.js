@@ -27,17 +27,17 @@ db.Category = require("./category.model")(sequelize, Sequelize);
 db.Years = require("./years.model")(sequelize, Sequelize);
 
 db.Estate.belongsToMany( db.User, {
-  through: 'user_estates',
+  through: db.UserEstate,
   as: 'users',
   foreignKey: 'id_estate',
-  targetKey: 'id'
+  targetKey: 'uid'
 });
 
 db.User.belongsToMany( db.Estate, {
-  through: 'user_estates',
+  through: db.UserEstate,
   as: 'estates',
   foreignKey: 'id_user',
-  targetKey: 'id'
+  targetKey: 'rc'
 });
 
 db.CategoryPics.belongsTo(db.Years, {

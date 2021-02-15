@@ -1,19 +1,19 @@
 module.exports = (sequelize, Sequelize) => {
-  const UserEstate = sequelize.define("user_estate", {
+  const UserEstate = sequelize.define("user_estates", {
     id_user: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       allowNull: false,
       references: {
         model: 'user',
-        key: 'id'
+        key: 'uid'
       }
     },
     id_estate: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       allowNull: false,
       references: {
         model: 'estate',
-        key: 'id'
+        key: 'rc'
       }
     }
   }, {schema: 'auxiliary'});

@@ -26,8 +26,8 @@ exports.create = (req, res) => {
     Estate.findOne({where: { rc: estateToSave.rc}}).then( estate => {
       if ( estate !== null ){
         const userEstate = {
-          id_user: user.id,
-          id_estate: estate.id
+          id_user: user.uid,
+          id_estate: estate.rc
         };
         UserEstate.create(userEstate)
           .then( data => {
@@ -43,8 +43,8 @@ exports.create = (req, res) => {
         Estate.create(estateToSave)
           .then(data => {
               const userEstate = {
-                id_user: user.id,
-                id_estate: data.id
+                id_user: user.uid,
+                id_estate: data.rc
               };
               UserEstate.create(userEstate)
                 .then( data => {
@@ -70,7 +70,7 @@ exports.create = (req, res) => {
 
 exports.findHistoryByUser = (req, res) => {
   const user = req.params.id;
-  const condition = user ? { id: `${user}` } : null;
+  const condition = user ? { uid: `${user}` } : null;
   Estate.findAll({ include: [ { model: Users,  as: 'users', where: condition } ]})
     .then(data => {
       res.send(data);
@@ -94,4 +94,28 @@ exports.getUses = (req, res) => {
           err.message || "Some error occurred while retrieving uses."
       });
     });
+};
+
+exports.deletePropFromHistory = ( req, res ) => {
+
+  const user = req.params.user;
+  const prop = req.params.rc;
+  const condition = user && prop ? {
+    [Op.and]: [
+      { id_user: `${user}`},
+      { id_estate: `${prop}`}
+    ]
+  } : null;
+  UserEstate.destroy({
+    where: condition
+  })
+  .then(data => {
+    res.sendStatus(200);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while removing ${prop} from history."
+    });
+  });
 };
