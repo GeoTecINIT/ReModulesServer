@@ -71,7 +71,10 @@ exports.create = (req, res) => {
 exports.findHistoryByUser = (req, res) => {
   const user = req.params.id;
   const condition = user ? { uid: `${user}` } : null;
-  Estate.findAll({ include: [ { model: Users,  as: 'users', where: condition } ]})
+  Estate.findAll({
+    attributes: ['address', 'lat', 'lng', 'rc', 'surface', 'use', 'year'],
+    include: [ { model: Users,  as: 'users', where: condition } ]
+  })
     .then(data => {
       res.send(data);
     })
