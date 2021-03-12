@@ -28,6 +28,8 @@ db.Years = require("./years.model")(sequelize, Sequelize);
 db.Enveloped = require("./enveloped.model")(sequelize, Sequelize);
 db.EnvelopeCategory = require("./envelope_category.model")(sequelize, Sequelize);
 db.ComponentType = require("./component_type.model")(sequelize, Sequelize);
+db.SystemCode = require("./system_code.model")(sequelize, Sequelize);
+db.SystemType = require("./system_type.model")(sequelize, Sequelize);
 
 db.Estate.belongsToMany( db.User, {
   through: db.UserEstate,
@@ -46,7 +48,6 @@ db.User.belongsToMany( db.Estate, {
 db.CategoryPics.belongsTo(db.Years, {
   foreignKey: 'year_code'
 });
-
 db.CategoryPics.belongsTo(db.Category, {
   foreignKey: 'category_code'
 });
@@ -58,5 +59,9 @@ db.EnvelopeCategory.belongsTo(db.ComponentType, {
   foreignKey: 'component_code'
 });
 
+db.SystemType.belongsTo(db.SystemCode, {
+  foreignKey: 'system_code',
+  as: 'System_code'
+});
 
 module.exports = db;
