@@ -19,7 +19,9 @@ exports.create = (req, res) => {
     lng: req.body.lng,
     year: req.body.year,
     use: req.body.use,
-    surface: req.body.surface
+    surface: req.body.surface,
+    country: req.body.country,
+    climate_zone: req.body.climate_zone
   };
 
   Users.findOne({ where: { uid: req.body.uid}}).then( user => {
@@ -72,7 +74,7 @@ exports.findHistoryByUser = (req, res) => {
   const user = req.params.id;
   const condition = user ? { uid: `${user}` } : null;
   Estate.findAll({
-    attributes: ['address', 'lat', 'lng', 'rc', 'surface', 'use', 'year'],
+    attributes: ['address', 'lat', 'lng', 'rc', 'surface', 'use', 'year', 'country', 'climate_zone'],
     include: [ { model: Users,  as: 'users', where: condition } ]
   })
     .then(data => {

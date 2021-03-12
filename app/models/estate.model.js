@@ -21,6 +21,12 @@ module.exports = (sequelize, Sequelize) => {
     },
     surface: {
       type: Sequelize.DECIMAL
+    },
+    country: {
+      type: Sequelize.STRING
+    },
+    climate_zone: {
+      type: Sequelize.STRING
     }
   }, {schema: 'auxiliary'});
 };

@@ -1,18 +1,33 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const helmet = require('helmet');
+const morgan = require('morgan');
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:4200"
-};
+const whitelist = ['http://localhost:4200', 'http://re-modulees.ubikgs.com:8081']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
 
 app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
+app.use(helmet());
+
+app.use(morgan('combined'));
+
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.disable('x-powered-by');
 
 require("./app/routes/user.routes")(app);
 require("./app/routes/estate.routes")(app);

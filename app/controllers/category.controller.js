@@ -5,6 +5,8 @@ const Category = db.Category;
 const Enveloped = db.Enveloped;
 const EnvelopeCategory = db.EnvelopeCategory;
 const ComponentType = db.ComponentType;
+const SystemType = db.SystemType;
+const SystemCode = db.SystemCode;
 const Op = db.Sequelize.Op;
 
 exports.getPics = (req, res) => {
@@ -35,7 +37,7 @@ exports.getPics = (req, res) => {
       where: conditionUnion
     }, {
       model: Category,
-      attributes: ['category_code', 'name'],
+      attributes: ['category_code', 'name', 'building_code'],
     }] })
     .then(data => {
       res.send(data);
@@ -89,3 +91,37 @@ exports.getEnvelope = (req, res) => {
       });
     });
 };
+
+exports.getSystem = (req, res) => {
+  const year = req.params.year;
+  const country_code = req.params.country;
+  const climate_code = req.params.zone;
+  const building_code = req.params.building;
+
+  var condition = {
+    [Op.and]: [
+      { country_code: country_code},
+      { year_code: year },
+      { climate_code: climate_code },
+      { building_code: building_code },
+    ]
+  };
+
+  SystemType.findAll({
+    where: condition,
+    include: [{
+      attributes: ['description_system', 'system_type', 'pictures'],
+      model: SystemCode,
+      as: 'System_code'
+    }] })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving user."
+      });
+    });
+};
+
