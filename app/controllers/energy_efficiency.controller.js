@@ -7,6 +7,8 @@ const EnvelopeCategory = db.EnvelopeCategory;
 const ComponentType = db.ComponentType;
 const SystemType = db.SystemType;
 const SystemCode = db.SystemCode;
+const Altitude = db.Altitude;
+const ClimateZoneCode = db.CliZoneCode;
 const Op = db.Sequelize.Op;
 
 exports.getPics = (req, res) => {
@@ -21,7 +23,7 @@ exports.getPics = (req, res) => {
     ]
   } : null;
 
-  var conditionUnion = {
+  let conditionUnion = {
     [Op.and]: [
       { first_year: { [Op.lte]: year}},
       { last_year: { [Op.gte]: year }}
@@ -45,7 +47,7 @@ exports.getPics = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving user."
+          err.message || "Some error occurred while retrieving picture."
       });
     });
 };
@@ -63,7 +65,7 @@ exports.getEnvelope = (req, res) => {
     ]
   } : null;
 
-  var condition = {
+  let condition = {
     [Op.and]: [
       { category_code: category_code},
       { year_code: year }
@@ -87,7 +89,7 @@ exports.getEnvelope = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving user."
+          err.message || "Some error occurred while retrieving envelope."
       });
     });
 };
@@ -98,7 +100,7 @@ exports.getSystem = (req, res) => {
   const climate_code = req.params.zone;
   const building_code = req.params.building;
 
-  var condition = {
+  let condition = {
     [Op.and]: [
       { country_code: country_code},
       { year_code: year },
@@ -120,8 +122,101 @@ exports.getSystem = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving user."
+          err.message || "Some error occurred while retrieving system."
       });
     });
 };
 
+exports.getYearCode = ( req, res) => {
+  const year = req.params.year;
+  let condition = {
+    [Op.and]: [
+      { first_year: { [Op.lte]: year}},
+      { last_year: { [Op.gte]: year }}
+    ]
+  };
+  Years.findOne( {
+    where: condition
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving year code."
+      });
+    });
+};
+
+exports.getBuildingCode = ( req, res ) => {
+  const typoCode = req.params.code;
+  let condition = {
+    category_code: typoCode
+  };
+  Category.findOne( {
+    where: condition
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving typology code."
+      });
+    });
+};
+
+exports.getAltitude = ( req, res ) => {
+  const country = req.params.country;
+  const climate_code = req.params.climate;
+  const height = parseInt(req.params.height);
+  let condition = {
+    [Op.and]: [
+      { country_code: country},
+      { climate_code: climate_code },
+      { minimum_height: { [Op.lte]: height}},
+      { maximum_height: { [Op.gte]: height }}
+    ]
+  };
+  Altitude.findOne( {
+    where: condition
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving typology code."
+      });
+    });
+};
+
+exports.getClimateSubZone = ( req, res ) => {
+  const altitude = req.params.altitude;
+  const province = req.params.province;
+  const country = req.params.country;
+  const climate_code = req.params.climate;
+  let condition = {
+    [Op.and]: [
+      { country_code: country},
+      { climate_code: climate_code },
+      { province_code: province },
+      { altitude_code: altitude },
+    ]
+  };
+  ClimateZoneCode.findOne( {
+    where: condition
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving typology code."
+      });
+    });
+};

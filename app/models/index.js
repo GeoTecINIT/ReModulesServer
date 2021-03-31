@@ -30,6 +30,10 @@ db.EnvelopeCategory = require("./envelope_category.model")(sequelize, Sequelize)
 db.ComponentType = require("./component_type.model")(sequelize, Sequelize);
 db.SystemCode = require("./system_code.model")(sequelize, Sequelize);
 db.SystemType = require("./system_type.model")(sequelize, Sequelize);
+db.Altitude = require("./altitude.model")(sequelize, Sequelize);
+db.CliZoneCode = require("./climate_zone_code.model")(sequelize, Sequelize);
+db.EnergyScore = require("./energy_score.model")(sequelize, Sequelize);
+db.ScoreChart = require("./score_charts.model")(sequelize, Sequelize);
 
 db.Estate.belongsToMany( db.User, {
   through: db.UserEstate,

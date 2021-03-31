@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     name: {
       type: Sequelize.STRING
+    },
+    building_code: {
+      type: Sequelize.STRING
     }
   }, {schema: 'public', timestamps: false, tableName: 'category'});
 };
