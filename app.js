@@ -26,6 +26,7 @@ app.disable('x-powered-by');
 require("./app/routes/user.routes")(app);
 require("./app/routes/estate.routes")(app);
 require("./app/routes/typology.routes")(app);
+require("./app/routes/geodata.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
