@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("user", {
+  return sequelize.define("user", {
     uid: {
       type: Sequelize.STRING,
       primaryKey: true
@@ -10,6 +10,5 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     }
-  }, {schema: 'auxiliary'});
-  return User;
+  }, {schema: 'public'});
 };

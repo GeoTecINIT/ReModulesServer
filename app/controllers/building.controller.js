@@ -50,7 +50,7 @@ exports.getBuildingCode = ( req, res ) => {
 exports.getAltitude = ( req, res ) => {
   const country = req.params.country;
   const climate_code = req.params.climate;
-  const height = parseInt(req.params.height);
+  const height = parseFloat(req.params.height);
   let condition = {
     [Op.and]: [
       { country_code: country},

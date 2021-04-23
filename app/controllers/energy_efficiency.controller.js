@@ -76,7 +76,7 @@ exports.getEnvelope = (req, res) => {
     attributes: ['code'],
     where: condition,
     include: [{
-      attributes: ['description', 'type_construction', 'picture', 'u_value'],
+      attributes: ['enveloped_code', 'description', 'type_construction', 'picture', 'u_value', 'area'],
       model: Enveloped,
       where: conditionUnion
     }, {
