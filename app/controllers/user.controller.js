@@ -1,5 +1,7 @@
 const db = require("../models");
 const User = db.User;
+const UserRole = db.UserRole;
+const Role = db.Roles;
 const Op = db.Sequelize.Op;
 
 
@@ -15,9 +17,22 @@ exports.create = (req, res) => {
     name: req.body.name,
     email: req.body.email
   };
+  const userRole = {
+    user_id: req.body.uid,
+    role_id: 2
+  };
   User.create(user)
     .then(data => {
-      res.send(data);
+      UserRole.create(userRole)
+        .then(userRole => {
+          res.send(data);
+        })
+        .catch( err => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while creating the User Role."
+          });
+        });
     })
     .catch(err => {
       res.status(500).send({
@@ -30,10 +45,15 @@ exports.create = (req, res) => {
 
 exports.findAll = (req, res) => {
 
-  const name = req.query.name;
-  const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-
-  User.findAll({ where: condition })
+  UserRole.findAll(
+    {
+      include : [
+        { model : User
+        },
+        { model: Role}
+      ]
+    }
+  )
     .then(data => {
       res.send(data);
     })
@@ -48,9 +68,18 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
 
   const uid = req.params.uid;
-  const condition = uid ? { uid: `${uid}` } : null;
+  const condition = uid ? { user_id: `${uid}` } : null;
 
-  User.findOne({where: condition})
+  UserRole.findOne(
+    {
+      include : [
+        { model : User
+        },
+        { model: Role}
+      ],
+      where: condition
+    }
+    )
     .then(data => {
       res.send(data);
     })

@@ -68,18 +68,15 @@ exports.create = (req, res) => {
               typology_name: req.body.typology_name,
               building_code: req.body.building_code
             };
-            console.log('Datos a ingresar Del building!!!! ', userEstate);
             UserBuilding.create(userEstate)
               .then( dataUserBuilding => {
                 const userEnergyScore = {
                   energy_score_id: req.body.energy_score_code,
                   building_id: dataUserBuilding.id
                 };
-                console.log('Datos a ingresar Antes!!!! ', userEnergyScore);
                 // energy score
                 UserBuildingEnergyScore.create(userEnergyScore)
                   .then( data => {
-                    console.log('Datos a ingresar!!!! ', userEnergyScore, ' -- ', data);
                     // Enveloped data
                     Object.entries( req.body.enveloped ).forEach(([key, value]) => {
                       const userEnveloped = {
@@ -186,7 +183,7 @@ exports.findHistoryByUser = (req, res) => {
 };
 
 exports.getUses = (req, res) => {
-  Estate.aggregate('use', 'DISTINCT', { plain: false})
+  Building.aggregate('use', 'DISTINCT', { plain: false})
     .then( data =>{
       res.send(data);
     })
@@ -208,7 +205,7 @@ exports.deletePropFromHistory = ( req, res ) => {
       { id_estate: `${prop}`}
     ]
   } : null;
-  UserEstate.destroy({
+  UserBuilding.destroy({
     where: condition
   })
   .then(data => {
@@ -220,4 +217,55 @@ exports.deletePropFromHistory = ( req, res ) => {
         err.message || "Some error occurred while removing ${prop} from history."
     });
   });
+};
+
+exports.findAllHistory =  ( req, res ) => {
+  UserBuilding.findAll({
+    include: [
+      {
+        model: Enveloped,
+      },
+      {
+        model: System,
+      },
+      {
+        model: ScoreChart,
+      },
+      {
+        model: EnergyScore,
+      },
+      {
+        model: Building,
+      }
+    ],
+
+  })
+    .then(userBuildingData  => {
+      res.send(userBuildingData);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving user."
+      });
+    });
+};
+
+exports.getBuildingByAddress = (req, res ) => {
+  const address = '%' + req.params.address + '%';
+  let condition = {
+    [Op.like]: { address : address}
+  };
+  Building.findOne( {
+    where: condition
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving typology code."
+      });
+    });
 };

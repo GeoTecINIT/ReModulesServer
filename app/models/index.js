@@ -20,6 +20,8 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.User = require("./user.model.js")(sequelize, Sequelize);
+db.Roles = require("./roles.model")(sequelize, Sequelize);
+db.UserRole = require("./user_role.model")(sequelize, Sequelize);
 db.Building = require("./building.model.js")(sequelize, Sequelize);
 db.UserBuilding = require("./user_building.model.js")(sequelize, Sequelize);
 db.CategoryPics = require("./category_pics.model")(sequelize, Sequelize);
@@ -122,6 +124,24 @@ db.ScoreChart.belongsToMany( db.UserBuilding, {
 db.SystemType.belongsTo(db.SystemCode, {
   foreignKey: 'system_code',
   as: 'System_code'
+});
+
+db.Roles.belongsToMany( db.User, {
+  through: db.UserRole,
+  foreignKey: 'role_id',
+  targetKey: 'uid'
+});
+
+db.User.belongsToMany( db.Roles, {
+  through: db.UserRole,
+  foreignKey: 'user_id',
+  targetKey: 'id'
+});
+db.UserRole.belongsTo( db.Roles, {
+  foreignKey: 'role_id'
+});
+db.UserRole.belongsTo( db.User, {
+  foreignKey: 'user_id'
 });
 
 module.exports = db;
