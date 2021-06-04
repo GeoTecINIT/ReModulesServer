@@ -9,6 +9,7 @@ const SystemType = db.SystemType;
 const SystemCode = db.SystemCode;
 const EnergyScore = db.EnergyScore;
 const ScoreChart = db.ScoreChart;
+const ClimateZone = db.ClimateZone;
 const Op = db.Sequelize.Op;
 
 exports.getPics = (req, res) => {
@@ -16,12 +17,15 @@ exports.getPics = (req, res) => {
   const country_code = req.params.country;
   const climate_code = req.params.zone;
 
-  const condition = year && country_code && climate_code ? {
+  const condition = year && country_code && climate_code ?
+      { country_code: country_code } : null;
+
+  let conditionClimate = {
     [Op.and]: [
-      { country_code: country_code },
-      { climate_code: climate_code }
+      { climate_code: climate_code},
+      { country_code: country_code }
     ]
-  } : null;
+  };
 
   let conditionUnion = {
     [Op.and]: [
@@ -40,7 +44,10 @@ exports.getPics = (req, res) => {
     }, {
       model: Category,
       attributes: ['category_code', 'name', 'building_code'],
-    }] })
+    }, {
+        model: ClimateZone,
+        where: conditionClimate
+      }] })
     .then(data => {
       res.send(data);
     })
@@ -53,22 +60,18 @@ exports.getPics = (req, res) => {
 };
 
 exports.getEnvelope = (req, res) => {
-  const year = req.params.year;
   const country_code = req.params.country;
-  const climate_code = req.params.zone;
-  const category_code = req.params.category;
+  const category_pic_code = req.params.category;
 
-  const conditionUnion = year && country_code && climate_code ? {
+  const conditionUnion = country_code ? {
     [Op.and]: [
-      { country_code: country_code },
-      { climate_code: climate_code }
+      { country_code: country_code }
     ]
   } : null;
 
   let condition = {
     [Op.and]: [
-      { category_code: category_code},
-      { year_code: year }
+      { category_pic_code: category_pic_code}
     ]
   };
 

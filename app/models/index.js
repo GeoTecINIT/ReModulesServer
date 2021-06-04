@@ -36,6 +36,7 @@ db.Altitude = require("./altitude.model")(sequelize, Sequelize);
 db.CliZoneCode = require("./climate_zone_code.model")(sequelize, Sequelize);
 db.EnergyScore = require("./energy_score.model")(sequelize, Sequelize);
 db.ScoreChart = require("./score_charts.model")(sequelize, Sequelize);
+db.ClimateZone = require("./climate_zone.model")(sequelize, Sequelize);
 
 db.UserBuildingEnveloped = require("./user_building_enveloped.model")(sequelize, Sequelize);
 db.UserBuildingSystem = require("./user_building_system.model")(sequelize, Sequelize);
@@ -67,11 +68,17 @@ db.CategoryPics.belongsTo(db.Years, {
 db.CategoryPics.belongsTo(db.Category, {
   foreignKey: 'category_code'
 });
+db.CategoryPics.belongsTo(db.ClimateZone, {
+  foreignKey: 'climate_code'
+});
 
 db.EnvelopeCategory.belongsTo(db.Enveloped, {
   foreignKey: 'enveloped_code'
 });
 db.EnvelopeCategory.belongsTo(db.ComponentType, {
+  foreignKey: 'component_code'
+});
+db.EnvelopeCategory.belongsTo(db.CategoryPics, {
   foreignKey: 'component_code'
 });
 

@@ -7,6 +7,12 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.DECIMAL
     },
+    add_parameter: {
+      type: Sequelize.STRING
+    },
+    data_type: {
+      type: Sequelize.STRING
+    },
     country_code: {
       type: Sequelize.DECIMAL
     },
@@ -19,5 +25,5 @@ module.exports = (sequelize, Sequelize) => {
     category_code: {
       type: Sequelize.STRING
     }
-  }, {schema: 'public', timestamps: false});
+  }, {schema: 'release', timestamps: false});
 };

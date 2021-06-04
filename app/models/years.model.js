@@ -1,8 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   return sequelize.define("years", {
-    year_code: {
+    id_year: {
       type: Sequelize.STRING,
       primaryKey: true
+    },
+    year_code: {
+      type: Sequelize.STRING,
     },
     first_year: {
       type: Sequelize.DECIMAL
@@ -13,5 +16,5 @@ module.exports = (sequelize, Sequelize) => {
     country_code: {
       type: Sequelize.STRING
     }
-  }, {schema: 'public', timestamps: false});
+  }, {schema: 'release', timestamps: false});
 };

@@ -10,5 +10,5 @@ module.exports = (sequelize, Sequelize) => {
     building_code: {
       type: Sequelize.STRING
     }
-  }, {schema: 'public', timestamps: false, tableName: 'category'});
+  }, {schema: 'release', timestamps: false, tableName: 'category'});
 };

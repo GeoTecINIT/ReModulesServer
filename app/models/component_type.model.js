@@ -7,5 +7,5 @@ module.exports = (sequelize, Sequelize) => {
     name: {
       type: Sequelize.STRING
     }
-  }, {schema: 'public', timestamps: false, tableName: 'component_type'});
+  }, {schema: 'release', timestamps: false, tableName: 'component_type'});
 };
