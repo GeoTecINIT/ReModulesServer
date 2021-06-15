@@ -40,7 +40,7 @@ exports.getTypologyCode = ( req, res ) => {
   const condition = { country_code : country_code};
   const conditionClimate = {
     [Op.and]: [
-      { climate_code: climate_code},
+      { id_climate: climate_code},
       { country_code: country_code }
     ]
   };

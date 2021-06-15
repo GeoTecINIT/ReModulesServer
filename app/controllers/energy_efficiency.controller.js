@@ -15,14 +15,26 @@ const Op = db.Sequelize.Op;
 exports.getPics = (req, res) => {
   const year = req.params.year;
   const country_code = req.params.country;
-  const climate_code = req.params.zone;
+  const id_climate = req.params.zone;
 
-  const condition = year && country_code && climate_code ?
+  let condition = year && country_code ?
       { country_code: country_code } : null;
+
+  if ( country_code === 'GR') {
+    condition = {
+      country_code : country_code,
+      data_type : 'ReEx'
+    }
+  } else if (country_code === 'BG' ) {
+    condition = {
+      country_code : country_code,
+      add_parameter : 'Gen'
+    }
+  }
 
   let conditionClimate = {
     [Op.and]: [
-      { climate_code: climate_code},
+      { id_climate: id_climate},
       { country_code: country_code }
     ]
   };
@@ -35,7 +47,6 @@ exports.getPics = (req, res) => {
   };
 
   CategoryPics.findAll({
-    attributes: ['category_pic_code', 'name'],
     where: condition,
     include: [{
       attributes: ['year_code'],

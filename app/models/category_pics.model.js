@@ -24,6 +24,12 @@ module.exports = (sequelize, Sequelize) => {
     },
     category_code: {
       type: Sequelize.STRING
+    },
+    d_add_parameter: {
+      type: Sequelize.STRING
+    },
+    d_add_parameter_original: {
+      type: Sequelize.STRING
     }
   }, {schema: 'release', timestamps: false});
 };

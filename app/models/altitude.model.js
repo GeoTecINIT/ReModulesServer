@@ -16,5 +16,5 @@ module.exports = (sequelize, Sequelize) => {
     climate_code: {
       type: Sequelize.STRING
     }
-  },  {schema: 'public', timestamps: false, tableName: 'altitude'});
+  },  {schema: 'release', timestamps: false, tableName: 'altitude'});
 };
