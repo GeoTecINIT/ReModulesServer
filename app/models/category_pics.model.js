@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     country_code: {
-      type: Sequelize.DECIMAL
+      type: Sequelize.STRING
     },
     climate_code: {
       type: Sequelize.STRING

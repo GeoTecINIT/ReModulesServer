@@ -37,6 +37,10 @@ db.CliZoneCode = require("./climate_zone_code.model")(sequelize, Sequelize);
 db.EnergyScore = require("./energy_score.model")(sequelize, Sequelize);
 db.ScoreChart = require("./score_charts.model")(sequelize, Sequelize);
 db.ClimateZone = require("./climate_zone.model")(sequelize, Sequelize);
+db.Measures = require("./measures.model")(sequelize, Sequelize);
+db.MeasuresBuilding = require("./measures_building.model")(sequelize, Sequelize);
+db.ImprovingBuilding = require("./improving_buildings.model")(sequelize, Sequelize);
+
 
 db.UserBuildingEnveloped = require("./user_building_enveloped.model")(sequelize, Sequelize);
 db.UserBuildingSystem = require("./user_building_system.model")(sequelize, Sequelize);
@@ -82,6 +86,21 @@ db.EnvelopeCategory.belongsTo(db.CategoryPics, {
   foreignKey: 'component_code'
 });
 
+db.Measures.belongsTo(db.ComponentType, {
+  foreignKey: 'component_code'
+});
+db.ImprovingBuilding.belongsTo(db.CategoryPics, {
+  foreignKey: 'category_pic_code'
+});
+db.MeasuresBuilding.belongsTo(db.ImprovingBuilding, {
+  foreignKey: 'building_variant_code'
+});
+db.MeasuresBuilding.belongsTo(db.Measures, {
+  foreignKey: 'measure_code'
+});
+db.MeasuresBuilding.belongsTo(db.CategoryPics, {
+  foreignKey: 'component_code'
+});
 
 db.UserBuilding.belongsToMany( db.Enveloped, {
   through: db.UserBuildingEnveloped,

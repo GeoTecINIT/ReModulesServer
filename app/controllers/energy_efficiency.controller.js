@@ -10,6 +10,9 @@ const SystemCode = db.SystemCode;
 const EnergyScore = db.EnergyScore;
 const ScoreChart = db.ScoreChart;
 const ClimateZone = db.ClimateZone;
+const Measures = db.Measures;
+const ImprovingBuilding = db.ImprovingBuilding;
+const MeasuresBuilding = db.MeasuresBuilding;
 const Op = db.Sequelize.Op;
 
 exports.getPics = (req, res) => {
@@ -179,6 +182,35 @@ exports.getScoreChart= ( req, res ) => {
   };
   ScoreChart.findAll( {
     where: condition
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving typology code."
+      });
+    });
+};
+
+exports.getRefurbishment= ( req, res ) => {
+  const category_pic_code = req.params.category_pic_code;
+  let condition = {
+    category_pic_code: category_pic_code
+  };
+  MeasuresBuilding.findAll( {
+    include: [{
+      attributes: ['building_variant_code','number_building_variant','level_improvement', 'type_variant', 'building_variant_description', 'building_variant_description_original'],
+      model: ImprovingBuilding,
+      where: condition
+    }, {
+      attributes: ['measure_code', 'measure_type', 'variant_measure_type', 'description_measure_type', 'description_measure_type_original', 'picture', 'u_value'],
+      model: Measures,
+      include: {
+        model: ComponentType
+      }
+    }]
   })
     .then(data => {
       res.send(data);
