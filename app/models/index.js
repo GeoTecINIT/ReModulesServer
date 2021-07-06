@@ -30,8 +30,6 @@ db.Years = require("./years.model")(sequelize, Sequelize);
 db.Enveloped = require("./enveloped.model")(sequelize, Sequelize);
 db.EnvelopeCategory = require("./envelope_category.model")(sequelize, Sequelize);
 db.ComponentType = require("./component_type.model")(sequelize, Sequelize);
-db.SystemCode = require("./system_code.model")(sequelize, Sequelize);
-db.SystemType = require("./system_type.model")(sequelize, Sequelize);
 db.Altitude = require("./altitude.model")(sequelize, Sequelize);
 db.CliZoneCode = require("./climate_zone_code.model")(sequelize, Sequelize);
 db.EnergyScore = require("./energy_score.model")(sequelize, Sequelize);
@@ -40,6 +38,11 @@ db.ClimateZone = require("./climate_zone.model")(sequelize, Sequelize);
 db.Measures = require("./measures.model")(sequelize, Sequelize);
 db.MeasuresBuilding = require("./measures_building.model")(sequelize, Sequelize);
 db.ImprovingBuilding = require("./improving_buildings.model")(sequelize, Sequelize);
+db.SystemTypes =  require("./system_types.model")(sequelize, Sequelize);
+db.SystemMeasures =  require("./system_measures.model")(sequelize, Sequelize);
+db.HeatingSystem =  require("./heating_system.model")(sequelize, Sequelize);
+db.WaterSystem =  require("./water_system.model")(sequelize, Sequelize);
+db.VentilationSystem =  require("./ventilation_system.model")(sequelize, Sequelize);
 
 
 db.UserBuildingEnveloped = require("./user_building_enveloped.model")(sequelize, Sequelize);
@@ -112,18 +115,6 @@ db.Enveloped.belongsToMany( db.UserBuilding, {
   foreignKey: 'enveloped_id',
   targetKey: 'id'
 });
-
-db.UserBuilding.belongsToMany( db.SystemCode, {
-  through: db.UserBuildingSystem,
-  foreignKey: 'building_id',
-  targetKey: 'system_code'
-});
-db.SystemCode.belongsToMany( db.UserBuilding, {
-  through: db.UserBuildingSystem,
-  foreignKey: 'system_id',
-  targetKey: 'building_id'
-});
-
 db.UserBuilding.belongsToMany( db.EnergyScore, {
   through: db.UserBuildingEnergyScore,
   foreignKey: 'building_id',
@@ -147,11 +138,6 @@ db.ScoreChart.belongsToMany( db.UserBuilding, {
 });
 
 
-db.SystemType.belongsTo(db.SystemCode, {
-  foreignKey: 'system_code',
-  as: 'System_code'
-});
-
 db.Roles.belongsToMany( db.User, {
   through: db.UserRole,
   foreignKey: 'role_id',
@@ -168,6 +154,25 @@ db.UserRole.belongsTo( db.Roles, {
 });
 db.UserRole.belongsTo( db.User, {
   foreignKey: 'user_id'
+});
+
+db.SystemTypes.belongsTo(db.SystemMeasures, {
+  foreignKey: 'code_system_measure'
+});
+db.SystemTypes.belongsTo(db.WaterSystem, {
+  foreignKey: 'water_system',
+  as: 'water'
+});
+db.SystemTypes.belongsTo(db.HeatingSystem, {
+  foreignKey: 'heating_system',
+  as: 'heating'
+});
+db.SystemTypes.belongsTo(db.VentilationSystem, {
+  foreignKey: 'ventilation_system',
+  as: 'ventilation'
+});
+db.SystemTypes.belongsTo(db.CategoryPics, {
+  foreignKey: 'category_pic_code'
 });
 
 module.exports = db;

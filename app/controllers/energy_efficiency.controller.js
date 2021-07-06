@@ -5,14 +5,17 @@ const Category = db.Category;
 const Enveloped = db.Enveloped;
 const EnvelopeCategory = db.EnvelopeCategory;
 const ComponentType = db.ComponentType;
-const SystemType = db.SystemType;
-const SystemCode = db.SystemCode;
+const SystemTypes = db.SystemTypes;
 const EnergyScore = db.EnergyScore;
 const ScoreChart = db.ScoreChart;
 const ClimateZone = db.ClimateZone;
 const Measures = db.Measures;
 const ImprovingBuilding = db.ImprovingBuilding;
 const MeasuresBuilding = db.MeasuresBuilding;
+const HeatingSystem = db.HeatingSystem;
+const SystemMeasures = db.SystemMeasures;
+const WaterSystem = db.WaterSystem;
+const VentilationSystem = db.VentilationSystem;
 const Op = db.Sequelize.Op;
 
 exports.getPics = (req, res) => {
@@ -112,27 +115,31 @@ exports.getEnvelope = (req, res) => {
 };
 
 exports.getSystem = (req, res) => {
-  const year = req.params.year;
-  const country_code = req.params.country;
-  const climate_code = req.params.zone;
-  const building_code = req.params.building;
+  const category_pic_code = req.params.category_pic_code;
 
   let condition = {
-    [Op.and]: [
-      { country_code: country_code},
-      { year_code: year },
-      { climate_code: climate_code },
-      { building_code: building_code },
-    ]
+    category_pic_code: category_pic_code,
+    level_improvement: 'Actual conditions'
   };
 
-  SystemType.findAll({
+  SystemTypes.findAll({
     where: condition,
     include: [{
-      attributes: ['description_system', 'system_type', 'pictures'],
-      model: SystemCode,
-      as: 'System_code'
-    }] })
+          model: HeatingSystem,
+          as: 'heating'
+        },
+      {
+        model: WaterSystem,
+        as: 'water'
+      },
+      {
+        model: VentilationSystem,
+        as: 'ventilation'
+      },
+      {
+        model: SystemMeasures
+      }
+    ] })
     .then(data => {
       res.send(data);
     })
