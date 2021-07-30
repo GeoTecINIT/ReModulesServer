@@ -16,6 +16,7 @@ const HeatingSystem = db.HeatingSystem;
 const SystemMeasures = db.SystemMeasures;
 const WaterSystem = db.WaterSystem;
 const VentilationSystem = db.VentilationSystem;
+const Efficiency = db.Efficiency;
 const Op = db.Sequelize.Op;
 
 exports.getPics = (req, res) => {
@@ -152,21 +153,11 @@ exports.getSystem = (req, res) => {
 };
 
 exports.getEnergyScore = ( req, res ) => {
-  const country = req.params.country;
-  const climate_code = req.params.climate_code;
-  const climate_zone = req.params.climate_zone;
-  const year_code = req.params.year_code;
-  const category_code = req.params.category_code;
+  const category_pic_code = req.params.category_pic_code;
   let condition = {
-    [Op.and]: [
-      { country_code: country},
-      { climate_code: climate_code },
-      { climate_zone: climate_zone },
-      { year_code: year_code },
-      { category_code: category_code },
-    ]
+    category_pic_code: category_pic_code
   };
-  EnergyScore.findOne( {
+  Efficiency.findAll( {
     where: condition
   })
     .then(data => {
@@ -180,28 +171,7 @@ exports.getEnergyScore = ( req, res ) => {
     });
 };
 
-exports.getScoreChart= ( req, res ) => {
-  const energy_score = req.params.energy_score;
-  let condition = {
-    [Op.and]: [
-      { energy_score_code: energy_score}
-    ]
-  };
-  ScoreChart.findAll( {
-    where: condition
-  })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving typology code."
-      });
-    });
-};
-
-exports.getRefurbishment= ( req, res ) => {
+exports.getEnvelopeRefurbishment= (req, res ) => {
   const category_pic_code = req.params.category_pic_code;
   let condition = {
     category_pic_code: category_pic_code
@@ -226,6 +196,50 @@ exports.getRefurbishment= ( req, res ) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving typology code."
+      });
+    });
+};
+
+exports.getSystemRefurbishment= (req, res ) => {
+  const category_pic_code = req.params.category_pic_code;
+  const system_measure = req.params.system_measure;
+
+  let condition = {
+    category_pic_code: category_pic_code,
+    [Op.or]: [
+      { level_improvement: 'Standard'},
+      { level_improvement: 'Advanced' }
+    ],
+    [Op.and]: {
+      code_system_measure: system_measure
+    }
+  };
+
+  SystemTypes.findAll({
+    where: condition,
+    include: [{
+      model: HeatingSystem,
+      as: 'heating'
+    },
+      {
+        model: WaterSystem,
+        as: 'water'
+      },
+      {
+        model: VentilationSystem,
+        as: 'ventilation'
+      },
+      {
+        model: SystemMeasures
+      }
+    ] })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving system."
       });
     });
 };

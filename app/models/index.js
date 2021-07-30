@@ -43,6 +43,7 @@ db.SystemMeasures =  require("./system_measures.model")(sequelize, Sequelize);
 db.HeatingSystem =  require("./heating_system.model")(sequelize, Sequelize);
 db.WaterSystem =  require("./water_system.model")(sequelize, Sequelize);
 db.VentilationSystem =  require("./ventilation_system.model")(sequelize, Sequelize);
+db.Efficiency =  require("./efficiency.model")(sequelize, Sequelize);
 
 
 db.UserBuildingEnveloped = require("./user_building_enveloped.model")(sequelize, Sequelize);
@@ -172,6 +173,13 @@ db.SystemTypes.belongsTo(db.VentilationSystem, {
   as: 'ventilation'
 });
 db.SystemTypes.belongsTo(db.CategoryPics, {
+  foreignKey: 'category_pic_code'
+});
+
+db.Efficiency.belongsTo(db.SystemMeasures, {
+  foreignKey: 'code_system_measure',
+});
+db.Efficiency.belongsTo(db.CategoryPics, {
   foreignKey: 'category_pic_code'
 });
 
