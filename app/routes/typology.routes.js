@@ -8,5 +8,6 @@ module.exports = app => {
   router.get("/energyScore/category_pic_code/:category_pic_code", category.getEnergyScore);
   router.get("/refurbishment/enveloped/category_pic_code/:category_pic_code", category.getEnvelopeRefurbishment);
   router.get("/refurbishment/systems/category_pic_code/:category_pic_code/system_measure/:system_measure", category.getSystemRefurbishment);
+  router.get("/refurbishment/efficiency/category_pic_code/:category_pic_code/system_measure/:system_measure", category.getEfficiency);
   app.use('/api/typology', router);
 };

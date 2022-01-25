@@ -1,7 +1,7 @@
 module.exports = app => {
   const user = require("../controllers/user.controller.js");
 
-  var router = require("express").Router();
+  let router = require("express").Router();
 
   router.post("/", user.create);
 
@@ -12,6 +12,8 @@ module.exports = app => {
   router.put("/:uid", user.update);
 
   router.delete("/:uid", user.delete);
+
+  router.post('/auth/google', user.loginGoogle);
 
   app.use('/api/user', router);
 };

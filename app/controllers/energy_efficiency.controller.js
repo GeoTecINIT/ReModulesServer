@@ -178,7 +178,7 @@ exports.getEnvelopeRefurbishment= (req, res ) => {
   };
   MeasuresBuilding.findAll( {
     include: [{
-      attributes: ['building_variant_code','number_building_variant','level_improvement', 'type_variant', 'building_variant_description', 'building_variant_description_original'],
+      attributes: ['building_variant_code','number_building_variant','level_improvement', 'type_variant', 'building_variant_description', 'building_variant_description_original', 'number_building_variant'],
       model: ImprovingBuilding,
       where: condition
     }, {
@@ -242,4 +242,29 @@ exports.getSystemRefurbishment= (req, res ) => {
           err.message || "Some error occurred while retrieving system."
       });
     });
+};
+exports.getEfficiency = (req, res) => {
+  const category_pic_code = req.params.category_pic_code;
+  const system_measure = req.params.system_measure;
+
+  let condition = {
+    [Op.and]: {
+      category_pic_code: category_pic_code,
+      code_system_measure: system_measure
+    }
+  };
+
+  Efficiency.findAll({
+    where: condition,
+  })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving system."
+      });
+    });
+
 };
