@@ -1,20 +1,20 @@
 module.exports = (sequelize, Sequelize) => {
-  return sequelize.define("years", {
-    id_year: {
+  return sequelize.define("altitude", {
+    altitude_code: {
       type: Sequelize.STRING,
       primaryKey: true
     },
-    year_code: {
-      type: Sequelize.STRING,
-    },
-    first_year: {
+    minimum_height: {
       type: Sequelize.DECIMAL
     },
-    last_year: {
+    maximum_height: {
       type: Sequelize.DECIMAL
     },
     country_code: {
       type: Sequelize.STRING
+    },
+    climate_code: {
+      type: Sequelize.STRING
     }
-  }, {schema: 'release', timestamps: false});
+  },  {schema: 'release', timestamps: false, tableName: 'altitude'});
 };

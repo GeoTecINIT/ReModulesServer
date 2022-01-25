@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  return sequelize.define("system_type", {
-    id_system_type: {
+  return sequelize.define("energy_score", {
+    energy_score_code: {
       type: Sequelize.STRING,
       primaryKey: true
     },
@@ -10,17 +10,20 @@ module.exports = (sequelize, Sequelize) => {
     climate_code: {
       type: Sequelize.STRING
     },
+    category_code: {
+      type: Sequelize.STRING
+    },
     year_code: {
       type: Sequelize.STRING
     },
-    building_code: {
+    climate_zone: {
       type: Sequelize.STRING
     },
-    system_type: {
+    emission_ranking: {
       type: Sequelize.STRING
     },
-    system_code: {
+    consumption_ranking: {
       type: Sequelize.STRING
     }
-  }, {schema: 'public', timestamps: false, tableName: 'system_type'});
+  },  {schema: 'public', timestamps: false, tableName: 'energy_score'});
 };

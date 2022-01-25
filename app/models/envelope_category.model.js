@@ -7,15 +7,11 @@ module.exports = (sequelize, Sequelize) => {
     enveloped_code: {
       type: Sequelize.STRING
     },
-    category_code: {
-      type: Sequelize.STRING
-    },
-    year_code: {
-      type: Sequelize.STRING
-    },
     component_code: {
       type: Sequelize.STRING
-    }
-
-  }, {schema: 'public', timestamps: false, tableName: 'envelope_category'});
+    },
+    category_pic_code: {
+      type: Sequelize.STRING
+    },
+  }, {schema: 'release', timestamps: false, tableName: 'envelope_category'});
 };

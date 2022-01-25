@@ -8,14 +8,8 @@ const app = express();
 
 const whitelist = ['http://localhost:4200', 'http://re-modulees.ubikgs.com:8081']
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
+  origin: "*"
+};
 
 app.use(cors(corsOptions));
 
@@ -32,6 +26,7 @@ app.disable('x-powered-by');
 require("./app/routes/user.routes")(app);
 require("./app/routes/estate.routes")(app);
 require("./app/routes/typology.routes")(app);
+require("./app/routes/geodata.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

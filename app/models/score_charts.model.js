@@ -1,32 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-  return sequelize.define("estates", {
-    rc: {
+  return sequelize.define("score_charts", {
+    score_chart_code: {
       type: Sequelize.STRING,
       primaryKey: true
     },
-    address: {
+    energy_score_code: {
       type: Sequelize.STRING
     },
-    lat: {
+    demand: {
       type: Sequelize.DECIMAL
     },
-    lng: {
+    final_energy: {
       type: Sequelize.DECIMAL
     },
-    year: {
-      type: Sequelize.INTEGER
-    },
-    use: {
-      type: Sequelize.STRING
-    },
-    surface: {
+    primary_energy: {
       type: Sequelize.DECIMAL
     },
-    country: {
-      type: Sequelize.STRING
+    emissions: {
+      type: Sequelize.DECIMAL
     },
-    climate_zone: {
+    system: {
       type: Sequelize.STRING
     }
-  }, {schema: 'auxiliary'});
+  },  {schema: 'public', timestamps: false, tableName: 'score_charts'});
 };

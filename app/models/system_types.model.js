@@ -1,35 +1,35 @@
 module.exports = (sequelize, Sequelize) => {
-  return sequelize.define("category_pics", {
-    category_pic_code: {
+  return sequelize.define("system_types", {
+    system_code: {
       type: Sequelize.STRING,
       primaryKey: true
     },
-    name: {
-      type: Sequelize.DECIMAL
-    },
-    add_parameter: {
+    category_pic_code: {
       type: Sequelize.STRING
     },
-    data_type: {
+    building_variant_code: {
       type: Sequelize.STRING
     },
-    country_code: {
+    code_system_measure: {
       type: Sequelize.STRING
     },
-    climate_code: {
+    level_improvement: {
       type: Sequelize.STRING
     },
-    year_code: {
+    code_system_type: {
       type: Sequelize.STRING
     },
-    category_code: {
+    heating_system: {
       type: Sequelize.STRING
     },
-    d_add_parameter: {
+    water_system: {
       type: Sequelize.STRING
     },
-    d_add_parameter_original: {
+    ventilation_system: {
+      type: Sequelize.STRING
+    },
+    pv_system: {
       type: Sequelize.STRING
     }
-  }, {schema: 'release', timestamps: false});
+  }, {schema: 'release', timestamps: false, tableName: 'system_types'});
 };

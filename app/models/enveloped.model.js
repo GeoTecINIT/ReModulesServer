@@ -7,20 +7,29 @@ module.exports = (sequelize, Sequelize) => {
     country_code: {
       type: Sequelize.STRING
     },
-    climate_code: {
-      type: Sequelize.STRING
-    },
     component_code: {
       type: Sequelize.STRING
     },
     year_code: {
       type: Sequelize.STRING
     },
+    data_type: {
+      type: Sequelize.INTEGER
+    },
     construction_variant: {
+      type: Sequelize.INTEGER
+    },
+    type_construction: {
+      type: Sequelize.INTEGER
+    },
+    type_construction_original: {
       type: Sequelize.INTEGER
     },
     description: {
       type: Sequelize.STRING
+    },
+    original_description: {
+      type: Sequelize.INTEGER
     },
     picture: {
       type: Sequelize.STRING
@@ -31,5 +40,5 @@ module.exports = (sequelize, Sequelize) => {
     area: {
       type: Sequelize.INTEGER
     }
-  }, {schema: 'public', timestamps: false, tableName: 'enveloped'});
+  }, {schema: 'release', timestamps: false, tableName: 'enveloped'});
 };

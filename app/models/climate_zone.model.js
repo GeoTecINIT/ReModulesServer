@@ -1,17 +1,17 @@
 module.exports = (sequelize, Sequelize) => {
-  return sequelize.define("system_code", {
-    system_code: {
+  return sequelize.define("climate_zone", {
+    id_climate: {
       type: Sequelize.STRING,
       primaryKey: true
     },
-    description_system: {
+    climate_code: {
       type: Sequelize.STRING
     },
-    system_type: {
+    name: {
       type: Sequelize.STRING
     },
-    pictures: {
+    country_code: {
       type: Sequelize.STRING
-    }
-  }, {schema: 'public', timestamps: false, tableName: 'system_code'});
+    },
+  },  {schema: 'release', timestamps: false, tableName: 'climate_zone'});
 };
