@@ -5,25 +5,10 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    rc: {
-      type: Sequelize.STRING
-    },
     address: {
       type: Sequelize.STRING
     },
-    lat: {
-      type: Sequelize.DECIMAL
-    },
-    lng: {
-      type: Sequelize.DECIMAL
-    },
-    use: {
-      type: Sequelize.STRING
-    },
-    surface: {
-      type: Sequelize.DECIMAL
-    },
-    country: {
+    altitude: {
       type: Sequelize.STRING
     },
     climate_zone: {
@@ -32,20 +17,50 @@ module.exports = (sequelize, Sequelize) => {
     climate_sub_zone: {
       type: Sequelize.STRING
     },
-    province_name: {
+    coordinates: {
+      type: Sequelize.JSON
+    },
+    country: {
       type: Sequelize.STRING
     },
-    province_code: {
+    point: {
+      type: Sequelize.JSON
+    },
+    rc: {
       type: Sequelize.STRING
     },
-    altitude_code: {
+    region: {
       type: Sequelize.STRING
     },
-    x: {
-      type: Sequelize.DECIMAL
+    surface: {
+      type: Sequelize.INTEGER
     },
-    y: {
-      type: Sequelize.DECIMAL
+    building_code: {
+      type: Sequelize.STRING
     },
-  }, {schema: 'public',  timestamps: false, tableName: 'building'});
+    category_code: {
+      type: Sequelize.STRING
+    },
+    category_pic_code: {
+      type: Sequelize.STRING
+    },
+    use: {
+      type: Sequelize.STRING
+    },
+    year: {
+      type: Sequelize.INTEGER
+    },
+    year_code: {
+      type: Sequelize.STRING
+    },
+    code_system_measure: {
+      type: Sequelize.STRING
+    },
+    category_name: {
+      type: Sequelize.STRING
+    },
+    pic_name: {
+      type: Sequelize.STRING
+    }
+  }, {schema: 'release',  timestamps: false, tableName: 'building'});
 };

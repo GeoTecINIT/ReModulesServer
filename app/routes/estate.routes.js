@@ -1,19 +1,15 @@
+const {authJwt} = require("../validation");
+const user = require("../controllers/userEstate.controller");
 module.exports = app => {
   const user = require("../controllers/userEstate.controller.js");
 
   var router = require("express").Router();
 
-  router.post("/", user.create);
-
-  router.get("/", user.findAllHistory);
-
-  router.get("/user/:id", user.findHistoryByUser);
-
-  router.get("/uses/", user.getUses);
-
-  router.delete("/prop/:rc/user/:user", user.deletePropFromHistory);
-
-  router.get("/address/:address", user.getBuildingByAddress);
+  router.post("/", authJwt.verifyToken, user.addBuildingToUser);
+  router.get("/buildings", authJwt.verifyToken, user.getBuildings);
+  router.get("/favorite/address/:address", authJwt.verifyToken, user.isFavorite);
+  router.put("/", authJwt.verifyToken, user.updateBuildingUser);
+  router.delete("/building/:building", authJwt.verifyToken, user.deleteBuildingUser);
 
   app.use('/api/history', router);
 };

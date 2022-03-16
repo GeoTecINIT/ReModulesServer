@@ -21,5 +21,5 @@ module.exports = (sequelize, Sequelize) => {
         key: 'id'
       }
     }
-  }, {schema: 'public', timestamps: false, tableName: 'user_role'});
+  }, {schema: 'release', timestamps: false, tableName: 'user_role'});
 };

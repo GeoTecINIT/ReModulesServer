@@ -45,13 +45,6 @@ db.WaterSystem =  require("./water_system.model")(sequelize, Sequelize);
 db.VentilationSystem =  require("./ventilation_system.model")(sequelize, Sequelize);
 db.Efficiency =  require("./efficiency.model")(sequelize, Sequelize);
 
-
-db.UserBuildingEnveloped = require("./user_building_enveloped.model")(sequelize, Sequelize);
-db.UserBuildingSystem = require("./user_building_system.model")(sequelize, Sequelize);
-db.UserBuildingEnergyScore = require("./user_building_energy_score.model")(sequelize, Sequelize);
-db.UserBuildingScoreChart = require("./user_building_score_chart.model")(sequelize, Sequelize);
-
-
 db.Building.belongsToMany( db.User, {
   through: db.UserBuilding,
   foreignKey: 'building_id',
@@ -106,37 +99,6 @@ db.MeasuresBuilding.belongsTo(db.CategoryPics, {
   foreignKey: 'component_code'
 });
 
-db.UserBuilding.belongsToMany( db.Enveloped, {
-  through: db.UserBuildingEnveloped,
-  foreignKey: 'building_id',
-  targetKey: 'enveloped_code'
-});
-db.Enveloped.belongsToMany( db.UserBuilding, {
-  through: db.UserBuildingEnveloped,
-  foreignKey: 'enveloped_id',
-  targetKey: 'id'
-});
-db.UserBuilding.belongsToMany( db.EnergyScore, {
-  through: db.UserBuildingEnergyScore,
-  foreignKey: 'building_id',
-  targetKey: 'energy_score_code'
-});
-db.EnergyScore.belongsToMany( db.UserBuilding, {
-  through: db.UserBuildingEnergyScore,
-  foreignKey: 'energy_score_id',
-  targetKey: 'id'
-});
-
-db.UserBuilding.belongsToMany( db.ScoreChart, {
-  through: db.UserBuildingScoreChart,
-  foreignKey: 'building_id',
-  targetKey: 'score_chart_code'
-});
-db.ScoreChart.belongsToMany( db.UserBuilding, {
-  through: db.UserBuildingScoreChart,
-  foreignKey: 'score_chart_id',
-  targetKey: 'building_id'
-});
 
 
 db.Roles.belongsToMany( db.User, {

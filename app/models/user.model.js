@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     email: {
       type: Sequelize.STRING
-    }
-  }, {schema: 'public'});
+    },
+    country: {
+      type: Sequelize.STRING
+    },
+  }, {schema: 'release', tableName: 'user'});
 };

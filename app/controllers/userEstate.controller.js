@@ -1,5 +1,6 @@
-
-const db = require('../models');
+const db = require("../models");
+const jwt = require("jsonwebtoken");
+const config = require("../config/auth.config");
 const Building = db.Building;
 const UserBuilding = db.UserBuilding;
 const Users = db.User;
@@ -7,265 +8,267 @@ const Enveloped = db.Enveloped;
 const System = db.SystemCode;
 const EnergyScore = db.EnergyScore;
 const ScoreChart = db.ScoreChart;
-const UserBuildingEnveloped = db.UserBuildingEnveloped;
-const UserBuildingSystem = db.UserBuildingSystem;
-const UserBuildingEnergyScore = db.UserBuildingEnergyScore;
-const UserBuildingScoreChart = db.UserBuildingScoreChart;
+const ComponentType = db.ComponentType;
+const HeatingSystem = db.HeatingSystem;
+const SystemMeasures = db.SystemMeasures;
+const WaterSystem = db.WaterSystem;
+const VentilationSystem = db.VentilationSystem;
+const SystemTypes = db.SystemTypes;
+const Efficiency = db.Efficiency;
+const Measures = db.Measures;
+const ImprovingBuilding = db.ImprovingBuilding;
+const MeasuresBuilding = db.MeasuresBuilding;
+const EnvelopeCategory = db.EnvelopeCategory;
 const Op = db.Sequelize.Op;
 
-
-exports.create = (req, res) => {
-  const buildingToSave = {
-    rc: req.body.rc,
-    address: req.body.address,
-    lat: req.body.lat,
-    lng: req.body.lng,
-    year: req.body.year,
-    use: req.body.use,
-    surface: req.body.surface,
-    country: req.body.country,
-    climate_zone: req.body.climate_zone,
-    climate_sub_zone: req.body.climate_sub_zone,
-    region: req.body.region,
-    province_code: req.body.province_code,
-    province_name: req.body.province_name,
-    altitude_code: req.body.altitude_code,
-    x: req.body.x,
-    y: req.body.y
-  };
-  Users.findOne({ where: { uid: req.body.uid}}).then( user => {
-    let buildingId = buildingToSave.rc !== '-' ? {where: { rc: buildingToSave.rc}}: {where: 1};
-    Building.findOne(buildingId).then( estate => {
-      if ( estate !== null ){
-        const userEstate = {
-          user_id: user.uid,
-          building_id: estate.id,
-          year: req.body.year,
-          year_code: req.body.year_code,
-          typology_code: req.body.typology_code,
-          typology_name: req.body.typology_name,
-          building_code: req.body.building_code
-        };
-        UserBuilding.create(userEstate)
-          .then( data => {
-            res.send(data);
-          })
-          .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while creating the Estate."
-            });
-          });
+exports.addBuildingToUser = async (req, res) => {
+  try {
+    const buildingToSave = {
+      address: req.body.address,
+      altitude: req.body.altitudeCode,
+      climate_zone: req.body.climateZone,
+      climate_sub_zone: req.body.climateSubZone,
+      coordinates: req.body.coordinates,
+      country: req.body.country,
+      point: req.body.point,
+      rc: req.body.rc ? req.body.rc : "",
+      region: req.body.region,
+      surface: req.body.surface,
+      building_code: req.body.typology.buildingCode,
+      category_code: req.body.typology.categoryCode,
+      category_pic_code: req.body.typology.categoryPicCode,
+      use: req.body.use,
+      year: req.body.year,
+      year_code: req.body.typology.yearCode,
+      code_system_measure: req.body.typology.system.codeSystemMeasure,
+      category_name: req.body.typology.categoryName,
+      pic_name: req.body.typology.picName
+    };
+    const userId = req.userId;
+    const user = await Users.findOne({ where: { uid: userId } });
+    const estate = await Building.findOne({
+      where: { address: buildingToSave.address },
+    });
+    if (user.uid) {
+      if (estate !== null) {
       } else {
-        Building.create(buildingToSave)
-          .then(dataBuilding => {
-            const userEstate = {
-              user_id: user.uid,
-              building_id: dataBuilding.id,
-              year: req.body.year,
-              year_code: req.body.year_code,
-              typology_code: req.body.typology_code,
-              typology_name: req.body.typology_name,
-              building_code: req.body.building_code
-            };
-            UserBuilding.create(userEstate)
-              .then( dataUserBuilding => {
-                const userEnergyScore = {
-                  energy_score_id: req.body.energy_score_code,
-                  building_id: dataUserBuilding.id
-                };
-                // energy score
-                UserBuildingEnergyScore.create(userEnergyScore)
-                  .then( data => {
-                    // Enveloped data
-                    Object.entries( req.body.enveloped ).forEach(([key, value]) => {
-                      const userEnveloped = {
-                        enveloped_id: value,
-                        building_id: dataUserBuilding.id
-                      };
-                      UserBuildingEnveloped.create(userEnveloped)
-                        .catch(err => {
-                          res.status(500).send({
-                            message:
-                              err.message || "Some error occurred while creating the User Building Enveloped."
-                          });
-                        });
-                    });
-                    // system data
-                    Object.entries( req.body.system ).forEach(([key, value]) => {
-                      const userSystem = {
-                        system_id: value,
-                        building_id: dataUserBuilding.id
-                      };
-                      UserBuildingSystem.create(userSystem)
-                        .catch(err => {
-                          res.status(500).send({
-                            message:
-                              err.message || "Some error occurred while creating the User Building System."
-                          });
-                        });
-                    });
-                    // score chart data
-                    Object.entries( req.body.score_chart ).forEach(([key, value]) => {
-                      const userScoreChart = {
-                        score_chart_id: value,
-                        building_id: dataUserBuilding.id
-                      };
-                      UserBuildingScoreChart.create(userScoreChart)
-                        .catch(err => {
-                          res.status(500).send({
-                            message:
-                              err.message || "Some error occurred while creating the User Building score chart."
-                          });
-                        });
-                    });
-                  })
-                  .catch(err => {
-                    res.status(500).send({
-                      message:
-                        err.message || "Some error occurred while creating the  User Building Energy Score."
-                    });
-                  });
-                res.send(dataUserBuilding);
-              })
-              .catch(err => {
-                res.status(500).send({
-                  message:
-                    err.message || "Some error occurred while creating the User Building."
-                });
-              });
-          })
-          .catch(err => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while creating the Building."
-            });
-          });
+        const dataBuilding = await Building.create(buildingToSave);
+        const userEstate = {
+          user_id: userId,
+          building_id: dataBuilding.id,
+        };
+        await UserBuilding.create(userEstate);
+        res.status(200).send({ message: "Building saved!" });
+      }
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(400).send({ message: err.message, status: 400 });
+  }
+};
+
+exports.getBuildings = async (req, res) => {
+  const userId = req.userId;
+  const buildingToReturn = [];
+  try {
+    const buildings = await UserBuilding.findAll({
+      attributes: [],
+      include: [
+        {
+          model: Building,
+        },
+        {
+          attributes: ["uid"],
+          model: Users,
+          where: { uid: userId },
+        },
+      ],
+    });
+    for (const build of buildings) {
+      let condition = {
+        [Op.and]: {
+          category_pic_code: build.building.category_pic_code,
+          code_system_measure: build.building.code_system_measure,
+        },
+      };
+      const total_envelope = await EnvelopeCategory.findAll({
+        attributes: ["code"],
+        where: { category_pic_code: build.building.category_pic_code },
+        include: [
+          {
+            attributes: [
+              "enveloped_code",
+              "description",
+              "type_construction",
+              "picture",
+              "u_value",
+              "area",
+            ],
+            model: Enveloped,
+          },
+          {
+            model: ComponentType,
+            attributes: ["name", "component_code"],
+          },
+        ],
+      });
+      const system = await SystemTypes.findAll({
+        where: condition,
+        include: [
+          {
+            model: HeatingSystem,
+            as: "heating",
+          },
+          {
+            model: WaterSystem,
+            as: "water",
+          },
+          {
+            model: VentilationSystem,
+            as: "ventilation",
+          },
+          {
+            model: SystemMeasures,
+          },
+        ],
+      });
+      const efficiency_building = await Efficiency.findAll({
+        where: condition,
+      });
+      const refurbishment = await MeasuresBuilding.findAll({
+        include: [
+          {
+            attributes: [
+              "building_variant_code",
+              "number_building_variant",
+              "level_improvement",
+              "type_variant",
+              "building_variant_description",
+              "building_variant_description_original",
+              "number_building_variant",
+            ],
+            model: ImprovingBuilding,
+            where: {
+              category_pic_code: build.building.category_pic_code,
+            },
+          },
+          {
+            attributes: [
+              "measure_code",
+              "measure_type",
+              "variant_measure_type",
+              "description_measure_type",
+              "description_measure_type_original",
+              "picture",
+              "u_value",
+            ],
+            model: Measures,
+            include: {
+              model: ComponentType,
+            },
+          },
+        ],
+      });
+      buildingToReturn.push({
+        data_building: build.building,
+        envelope: total_envelope,
+        systems: system,
+        efficiency: efficiency_building,
+        envelope_refurbishment: refurbishment,
+      });
+    }
+    res.status(200).send(buildingToReturn);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.isFavorite = async (req, res) => {
+  const userId = req.userId;
+  const address = '%' + decodeURIComponent(req.params.address) + '%';
+  try {
+    const building = await UserBuilding.findOne({
+      attributes: [],
+      include: [
+        {
+          model: Building,
+          where: {
+            address: {
+              [Op.like] : address
+            }
+          },
+        },
+        {
+          attributes: ["uid"],
+          model: Users,
+          where: { uid: userId },
+        },
+      ],
+    });
+    if ( building ) {
+      res.status(200).send(building.building);
+    } else {
+      res.status(200).send({});
+    }
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.updateBuildingUser = async (req, res) => {
+  try {
+    const buildingToSave = {
+      altitude: req.body.altitudeCode,
+      climate_zone: req.body.climateZone,
+      climate_sub_zone: req.body.climateSubZone,
+      coordinates: req.body.coordinates,
+      country: req.body.country,
+      point: req.body.point,
+      rc: req.body.rc ? req.body.rc : "",
+      region: req.body.region,
+      surface: req.body.surface,
+      building_code: req.body.typology.buildingCode,
+      category_code: req.body.typology.categoryCode,
+      category_pic_code: req.body.typology.categoryPicCode,
+      use: req.body.use,
+      year: req.body.year,
+      year_code: req.body.typology.yearCode,
+      code_system_measure: req.body.typology.system.codeSystemMeasure,
+      category_name: req.body.typology.categoryName,
+      pic_name: req.body.typology.picName
+    };
+    const userId = req.userId;
+    const buildingToUpdate = await UserBuilding.findOne({
+      where: { user_id: userId } ,
+      include: [
+        {
+          model: Building,
+          where: {
+            address: req.body.address
+          }
+        }
+      ]
+    });
+    if ( buildingToUpdate ) {
+      await Building.update(buildingToSave, { where : {id: buildingToUpdate.building_id}});
+      res.status(200).send({ message: "Building updated!" });
+    } else {
+      res.status(404).send({ message: 'Building not found', status: 400 });
+    }
+  } catch (err) {
+    res.status(400).send({ message: err.message, status: 400 });
+  }
+}
+exports.deleteBuildingUser = async (req, res) => {
+  try {
+    await UserBuilding.destroy({
+      where: {
+        building_id: req.params.building
       }
     });
-  });
-};
-
-exports.findHistoryByUser = (req, res) => {
-  const user = req.params.id;
-  const condition = user ? { user_id: `${user}` } : null;
-
-  UserBuilding.findAll({
-    where: condition,
-    include: [
-      {
-        model: Enveloped,
-      },
-      {
-        model: System,
-      },
-      {
-        model: ScoreChart,
-      },
-      {
-        model: EnergyScore,
-      },
-      {
-        model: Building,
-      }
-    ],
-
-  })
-    .then(userBuildingData  => {
-      res.send(userBuildingData);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving user."
-      });
-    });
-};
-
-exports.getUses = (req, res) => {
-  Building.aggregate('use', 'DISTINCT', { plain: false})
-    .then( data =>{
-      res.send(data);
-    })
-    .catch( err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving uses."
-      });
-    });
-};
-
-exports.deletePropFromHistory = ( req, res ) => {
-
-  const user = req.params.user;
-  const prop = req.params.rc;
-  const condition = user && prop ? {
-    [Op.and]: [
-      { id_user: `${user}`},
-      { id_estate: `${prop}`}
-    ]
-  } : null;
-  UserBuilding.destroy({
-    where: condition
-  })
-  .then(data => {
-    res.sendStatus(200);
-  })
-  .catch(err => {
-    res.status(500).send({
-      message:
-        err.message || "Some error occurred while removing ${prop} from history."
-    });
-  });
-};
-
-exports.findAllHistory =  ( req, res ) => {
-  UserBuilding.findAll({
-    include: [
-      {
-        model: Enveloped,
-      },
-      {
-        model: System,
-      },
-      {
-        model: ScoreChart,
-      },
-      {
-        model: EnergyScore,
-      },
-      {
-        model: Building,
-      }
-    ],
-
-  })
-    .then(userBuildingData  => {
-      res.send(userBuildingData);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving user."
-      });
-    });
-};
-
-exports.getBuildingByAddress = (req, res ) => {
-  const address = '%' + req.params.address + '%';
-  let condition = {
-    [Op.like]: { address : address}
-  };
-  Building.findOne( {
-    where: condition
-  })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving typology code."
-      });
-    });
-};
+    res.status(200).send({ message: "Building remove from user history!" });
+  } catch (err) {
+    res.status(400).send({ message: err.message, status: 400 });
+  }
+}
