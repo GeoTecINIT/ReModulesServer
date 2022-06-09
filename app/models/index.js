@@ -44,6 +44,20 @@ db.HeatingSystem =  require("./heating_system.model")(sequelize, Sequelize);
 db.WaterSystem =  require("./water_system.model")(sequelize, Sequelize);
 db.VentilationSystem =  require("./ventilation_system.model")(sequelize, Sequelize);
 db.Efficiency =  require("./efficiency.model")(sequelize, Sequelize);
+db.ToolsApplications =  require("./tools_applications.model")(sequelize, Sequelize);
+db.ToolsCountries =  require("./tools_countries.model")(sequelize, Sequelize);
+db.ToolsProfiles =  require("./tools_profiles.model")(sequelize, Sequelize);
+db.ToolsSolutions =  require("./tools_solutions.model")(sequelize, Sequelize);
+db.ToolsSteps =  require("./tools_steps.model")(sequelize, Sequelize);
+db.ToolsStops =  require("./tools_stops.model")(sequelize, Sequelize);
+db.ToolsTypologies =  require("./tools_typologies.model")(sequelize, Sequelize);
+db.ToolsCountriesApp =  require("./tools_countries_applications.model")(sequelize, Sequelize);
+db.ToolsProfilesApp =  require("./tools_profiles_applications.model")(sequelize, Sequelize);
+db.ToolsSolutionsApp =  require("./tools_solutions_applications.model")(sequelize, Sequelize);
+db.ToolsStepsApp =  require("./tools_steps_applications.model")(sequelize, Sequelize);
+db.ToolsStopsApp =  require("./tools_stops_applications.model")(sequelize, Sequelize);
+db.ToolsTypologiesApp =  require("./tools_typologies_applications.model")(sequelize, Sequelize);
+
 
 db.Building.belongsToMany( db.User, {
   through: db.UserBuilding,
@@ -145,4 +159,106 @@ db.Efficiency.belongsTo(db.CategoryPics, {
   foreignKey: 'category_pic_code'
 });
 
+
+db.ToolsApplications.belongsToMany( db.ToolsCountries, {
+  through: db.ToolsCountriesApp,
+  foreignKey: 'app_id',
+  targetKey: 'id'
+});
+db.ToolsCountries.belongsToMany( db.ToolsApplications, {
+  through: db.ToolsCountriesApp,
+  foreignKey: 'country_id',
+  targetKey: 'id'
+});
+db.ToolsCountriesApp.belongsTo( db.ToolsApplications, {
+  foreignKey: 'app_id'
+});
+db.ToolsCountriesApp.belongsTo( db.ToolsCountries, {
+  foreignKey: 'country_id'
+});
+
+db.ToolsApplications.belongsToMany( db.ToolsProfiles, {
+  through: db.ToolsProfilesApp,
+  foreignKey: 'app_id',
+  targetKey: 'id'
+});
+db.ToolsProfiles.belongsToMany( db.ToolsApplications, {
+  through: db.ToolsProfilesApp,
+  foreignKey: 'profile_id',
+  targetKey: 'id'
+});
+db.ToolsProfilesApp.belongsTo( db.ToolsApplications, {
+  foreignKey: 'app_id'
+});
+db.ToolsProfilesApp.belongsTo( db.ToolsProfiles, {
+  foreignKey: 'profile_id'
+});
+
+db.ToolsApplications.belongsToMany( db.ToolsSolutions, {
+  through: db.ToolsSolutionsApp,
+  foreignKey: 'app_id',
+  targetKey: 'id'
+});
+db.ToolsSolutions.belongsToMany( db.ToolsApplications, {
+  through: db.ToolsSolutionsApp,
+  foreignKey: 'solution_id',
+  targetKey: 'id'
+});
+db.ToolsSolutionsApp.belongsTo( db.ToolsApplications, {
+  foreignKey: 'app_id'
+});
+db.ToolsSolutionsApp.belongsTo( db.ToolsSolutions, {
+  foreignKey: 'solution_id'
+});
+
+db.ToolsApplications.belongsToMany( db.ToolsSteps, {
+  through: db.ToolsStepsApp,
+  foreignKey: 'app_id',
+  targetKey: 'id'
+});
+db.ToolsSteps.belongsToMany( db.ToolsApplications, {
+  through: db.ToolsStepsApp,
+  foreignKey: 'step_id',
+  targetKey: 'id'
+});
+db.ToolsStepsApp.belongsTo( db.ToolsApplications, {
+  foreignKey: 'app_id'
+});
+db.ToolsStepsApp.belongsTo( db.ToolsSteps, {
+  foreignKey: 'step_id'
+});
+
+db.ToolsApplications.belongsToMany( db.ToolsStops, {
+  through: db.ToolsStopsApp,
+  foreignKey: 'app_id',
+  targetKey: 'id'
+});
+db.ToolsStops.belongsToMany( db.ToolsApplications, {
+  through: db.ToolsStopsApp,
+  foreignKey: 'stop_id',
+  targetKey: 'id'
+});
+db.ToolsStopsApp.belongsTo( db.ToolsApplications, {
+  foreignKey: 'app_id'
+});
+db.ToolsStopsApp.belongsTo( db.ToolsStops, {
+  foreignKey: 'stop_id'
+});
+
+db.ToolsApplications.belongsToMany( db.ToolsTypologies, {
+  through: db.ToolsTypologiesApp,
+  foreignKey: 'app_id',
+  targetKey: 'id'
+});
+db.ToolsTypologies.belongsToMany( db.ToolsApplications, {
+  through: db.ToolsTypologiesApp,
+  foreignKey: 'typology_id',
+  targetKey: 'id'
+});
+db.ToolsTypologiesApp.belongsTo( db.ToolsApplications, {
+  foreignKey: 'app_id'
+});
+db.ToolsTypologiesApp.belongsTo( db.ToolsTypologies, {
+  foreignKey: 'typology_id'
+});
 module.exports = db;
