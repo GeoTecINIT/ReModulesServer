@@ -1,8 +1,13 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config");
+//const { Tools } = require("../models");
+const Tools = db.ToolsApplications;
 const Building = db.Building;
+const CEEBuilding = db.CeeBuilding;
 const UserBuilding = db.UserBuilding;
+const UserCeeBuilding = db.UserCEEBuilding;
+const UserTool = db.UserTool;
 const Users = db.User;
 const Enveloped = db.Enveloped;
 const System = db.SystemCode;
@@ -20,6 +25,31 @@ const ImprovingBuilding = db.ImprovingBuilding;
 const MeasuresBuilding = db.MeasuresBuilding;
 const EnvelopeCategory = db.EnvelopeCategory;
 const Op = db.Sequelize.Op;
+
+exports.addUserTool = (req, res) => {
+  const userId = req.userId;
+  if (!userId) {
+    res.status(400).send({
+      message: "Content can not be empty!",
+    });
+    return;
+  }
+  const userTool = {
+    user_id: userId,
+    tool_id: req.body.id
+  };
+  UserTool.create(userTool)
+    .then((data) => {
+          res.send(data);
+      })
+        .catch((err) => {
+          res.status(500).send({
+            message:
+              err.message ||
+              "Some error occurred while creating the User Role.",
+          });
+        });
+};
 
 exports.addBuildingToUser = async (req, res) => {
   try {
@@ -59,6 +89,94 @@ exports.addBuildingToUser = async (req, res) => {
         };
         await UserBuilding.create(userEstate);
         res.status(200).send({ message: "Building saved!" });
+      }
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(400).send({ message: err.message, status: 400 });
+  }
+};
+
+exports.addBuildingCEEToUser = async (req, res) => {
+  try {
+    const buildingToSave = {
+      address: req.body.address,
+      map_address: req.body.address,
+      rc: req.body.rc ? req.body.rc : "",
+      typology: req.body.typology,
+      case: req.body.case_building,
+      year: req.body.year,
+      image: req.body.image,
+      year_certificate: req.body.year_certificate,
+      letter_co2: req.body.letter_co2,
+      value_co2: req.body.value_co2,
+      letter_ep: req.body.letter_ep,
+      value_ep: req.body.value_ep,
+      year_certificate2: req.body.year_certificate2,
+      letter_co2_cert2: req.body.letter_co2_cert2,
+      value_co2_cert2: req.body.value_co2_cert2,
+      letter_ep_cert2: req.body.letter_ep_cert2,
+      value_ep_cert2: req.body.value_ep_cert2,
+      saving_co2_abs: req.body.saving_co2_abs,
+      saving_co2_percent: req.body.saving_co2_perc,
+      saving_ep_abs: req.body.saving_ep_abs,
+      saving_ep_percent: req.body.saving_ep_perc,
+      coordinates: req.body.coordinates,
+      point: req.body.point
+    };
+    const userId = req.userId;
+    const user = await Users.findOne({ where: { uid: userId } });
+    const estate = await CEEBuilding.findOne({
+      where: { address: buildingToSave.address },
+    });
+    if (user.uid) {
+      if (estate !== null) {
+      } else {
+        const dataBuilding = await CEEBuilding.create(buildingToSave);
+        const userEstate = {
+          user_id: userId,
+          cee_building_id: dataBuilding.id,
+        };
+        await UserCeeBuilding.create(userEstate);
+        res.status(200).send({ message: "Building saved!" });
+      }
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(400).send({ message: err.message, status: 400 });
+  }
+};
+
+exports.addToolToUser = async (req, res) => {
+  try {
+    const toolToSave = {
+      login_access: req.body.login_access,
+      image: req.body.image,
+      url: req.body.url,
+      short_description: req.body.short_description,
+      long_description: req.body.long_description,
+      wurl: req.body.wurl,
+      name: req.body.name
+    };
+    const userId = req.userId;
+    const user = await Users.findOne({ where: { uid: userId } });
+    const estate = await Tools.findOne({
+      model: Tools,
+      attributes: ["id", "login_access", "image", "url", "short_description", "long_description", "wurl", "name"],
+      where: { name: Tools.name },
+    });
+    if (user.uid) {
+      if (estate == null) {
+      } else {
+        const dataTool = await Tools.create(toolToSave);
+        const userEstate = {
+          user_id: userId,
+          tool_id: dataTool.id,
+        };
+        await UserTool.create(userEstate);
+        res.status(200).send({ message: "Tool saved!" });
       }
     } else {
       res.status(404).send({ message: "User not found" });
@@ -184,6 +302,83 @@ exports.getBuildings = async (req, res) => {
   }
 };
 
+exports.getCEEBuildings = async (req, res) => {
+  const userId = req.userId;
+  const buildingToReturn = [];
+  try {
+    const ceeBuildings = await UserCeeBuilding.findAll({
+      attributes: [],
+      include: [
+        {
+          model: CEEBuilding,
+        },
+        {
+          attributes: ["uid"],
+          model: Users,
+          where: { uid: userId },
+        },
+      ],
+    });
+    for (const ceeBuild of ceeBuildings) {
+      let condition = {
+        [Op.and]: {
+          address: ceeBuild.address,
+          rc: ceeBuild.rc,
+        },
+      };
+
+      buildingToReturn.push({
+        data_building: ceeBuild
+      });
+    }
+    res.status(200).send(buildingToReturn);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.getTools = async (req, res) => {
+    const userId = req.userId;
+    const toolToReturn = [];
+
+    /*await UserTool.findAll({
+      attributes: ["user_id"],
+      where: {user_id: userId}
+    }).then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving envelope.",
+      });
+    });*/
+
+  try{
+    const tools = await UserTool.findAll({
+      attributes: [],
+      include: [
+        {
+          model: Tools
+        },
+        {
+          attributes: ["uid"],
+          model: Users,
+          where: { uid: userId },
+        },
+      ],
+    });
+    for(const tool of tools){
+      toolToReturn.push({
+        tool
+      });
+    }
+    res.status(200).send(toolToReturn);
+  }catch (e){
+    res.status(400).send(e);
+  }
+};
+
 exports.isFavorite = async (req, res) => {
   const userId = req.userId;
   const address = '%' + decodeURIComponent(req.params.address) + '%';
@@ -208,6 +403,38 @@ exports.isFavorite = async (req, res) => {
     });
     if ( building ) {
       res.status(200).send(building.building);
+    } else {
+      res.status(200).send({});
+    }
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
+
+exports.isFavorite2 = async (req, res) => {
+  const userId = req.userId;
+  const name = '%' + decodeURIComponent(req.params.name) + '%';
+  try {
+    const tool = await UserTool.findOne({
+      attributes: [],
+      include: [
+        {
+          model: Tools,
+          where: {
+            name: {
+              [Op.like] : name
+            }
+          },
+        },
+        {
+          attributes: ["uid"],
+          model: Users,
+          where: { uid: userId },
+        },
+      ],
+    });
+    if ( tool ) {
+      res.status(200).send(tool.tool);
     } else {
       res.status(200).send({});
     }
@@ -268,6 +495,19 @@ exports.deleteBuildingUser = async (req, res) => {
       }
     });
     res.status(200).send({ message: "Building remove from user history!" });
+  } catch (err) {
+    res.status(400).send({ message: err.message, status: 400 });
+  }
+}
+
+exports.deleteToolUser = async (req, res) => {
+  try {
+    await UserTool.destroy({
+      where: {
+        tool_id: req.params.tool
+      }
+    });
+    res.status(200).send({ message: "Tool remove from user history!" });
   } catch (err) {
     res.status(400).send({ message: err.message, status: 400 });
   }

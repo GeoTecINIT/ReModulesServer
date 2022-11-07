@@ -4,6 +4,7 @@ module.exports = app => {
   const router = require("express").Router();
 
   router.get( '/', controller.getTools);
+  router.post('/', controller.create);
   router.get( '/filters', controller.buildFilters);
   app.use('/api/tools', router);
 };

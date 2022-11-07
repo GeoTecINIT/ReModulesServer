@@ -23,7 +23,10 @@ db.User = require("./user.model.js")(sequelize, Sequelize);
 db.Roles = require("./roles.model")(sequelize, Sequelize);
 db.UserRole = require("./user_role.model")(sequelize, Sequelize);
 db.Building = require("./building.model.js")(sequelize, Sequelize);
+db.CeeBuilding = require("./cee_building.model.js")(sequelize, Sequelize);
 db.UserBuilding = require("./user_building.model.js")(sequelize, Sequelize);
+db.UserTool = require("./user_tool.model.js")(sequelize, Sequelize);
+db.UserCEEBuilding = require("./user_cee_building.model.js")(sequelize, Sequelize);
 db.CategoryPics = require("./category_pics.model")(sequelize, Sequelize);
 db.Category = require("./category.model")(sequelize, Sequelize);
 db.Years = require("./years.model")(sequelize, Sequelize);
@@ -76,6 +79,43 @@ db.UserBuilding.belongsTo( db.Building, {
 db.UserBuilding.belongsTo( db.User, {
   foreignKey: 'user_id'
 });
+
+db.CeeBuilding.belongsToMany( db.User, {
+  through: db.UserCEEBuilding,
+  foreignKey: 'user_id',
+  targetKey: 'uid'
+});
+
+db.User.belongsToMany( db.CeeBuilding, {
+  through: db.UserCEEBuilding,
+  foreignKey: 'cee_building_id',
+  targetKey: 'id'
+});
+db.UserCEEBuilding.belongsTo( db.CeeBuilding, {
+  foreignKey: 'cee_building_id'
+});
+db.UserCEEBuilding.belongsTo( db.User, {
+  foreignKey: 'user_id'
+});
+
+db.ToolsApplications.belongsToMany( db.User, {
+  through: db.UserTool,
+  foreignKey: 'user_id',
+  targetKey: 'uid'
+});
+
+db.User.belongsToMany( db.ToolsApplications, {
+  through: db.UserTool,
+  foreignKey: 'tool_id',
+  targetKey: 'id'
+});
+db.UserTool.belongsTo( db.ToolsApplications, {
+  foreignKey: 'tool_id'
+});
+db.UserTool.belongsTo( db.User, {
+  foreignKey: 'user_id',
+});
+
 
 db.CategoryPics.belongsTo(db.Years, {
   foreignKey: 'year_code'
