@@ -60,6 +60,17 @@ db.ToolsSolutionsApp =  require("./tools_solutions_applications.model")(sequeliz
 db.ToolsStepsApp =  require("./tools_steps_applications.model")(sequelize, Sequelize);
 db.ToolsStopsApp =  require("./tools_stops_applications.model")(sequelize, Sequelize);
 db.ToolsTypologiesApp =  require("./tools_typologies_applications.model")(sequelize, Sequelize);
+db.Case = require("./case.model")(sequelize, Sequelize);
+db.Qualification = require("./qualification.model")(sequelize, Sequelize);
+db.Tipology = require("./tipology.model")(sequelize, Sequelize);
+db.Testimony = require("./testimony.model")(sequelize, Sequelize);
+db.Image = require("./image.model")(sequelize, Sequelize);
+db.Phase = require("./phase.model")(sequelize, Sequelize);
+db.Season = require("./season.model")(sequelize, Sequelize);
+db.Family = require("./family.model")(sequelize, Sequelize);
+db.File = require("./file.model")(sequelize, Sequelize);
+db.Monitoring = require("./monitoring.model")(sequelize, Sequelize);
+db.Variables = require("./variables.model")(sequelize, Sequelize);
 
 
 db.Building.belongsToMany( db.User, {
@@ -77,24 +88,6 @@ db.UserBuilding.belongsTo( db.Building, {
   foreignKey: 'building_id'
 });
 db.UserBuilding.belongsTo( db.User, {
-  foreignKey: 'user_id'
-});
-
-db.CeeBuilding.belongsToMany( db.User, {
-  through: db.UserCEEBuilding,
-  foreignKey: 'user_id',
-  targetKey: 'uid'
-});
-
-db.User.belongsToMany( db.CeeBuilding, {
-  through: db.UserCEEBuilding,
-  foreignKey: 'cee_building_id',
-  targetKey: 'id'
-});
-db.UserCEEBuilding.belongsTo( db.CeeBuilding, {
-  foreignKey: 'cee_building_id'
-});
-db.UserCEEBuilding.belongsTo( db.User, {
   foreignKey: 'user_id'
 });
 
@@ -301,4 +294,29 @@ db.ToolsTypologiesApp.belongsTo( db.ToolsApplications, {
 db.ToolsTypologiesApp.belongsTo( db.ToolsTypologies, {
   foreignKey: 'typology_id'
 });
+
+db.CeeBuilding.belongsTo(db.Case, {
+  foreignKey: 'case_id'
+});
+
+db.CeeBuilding.belongsTo(db.Qualification, {
+  foreignKey: 'letter_co2'
+});
+
+db.CeeBuilding.belongsTo(db.Qualification, {
+  foreignKey: 'letter_ep'
+});
+
+db.CeeBuilding.belongsTo(db.Qualification, {
+  foreignKey: 'letter_co2_cert2'
+});
+
+db.CeeBuilding.belongsTo(db.Qualification, {
+  foreignKey: 'letter_ep_cert2'
+});
+
+db.CeeBuilding.belongsTo(db.Tipology, {
+  foreignKey: 'tipology_id'
+})
+
 module.exports = db;

@@ -105,25 +105,23 @@ exports.addBuildingCEEToUser = async (req, res) => {
       map_address: req.body.address,
       rc: req.body.rc ? req.body.rc : "",
       typology: req.body.typology,
-      case: req.body.case_building,
+      case: req.body.case,
       year: req.body.year,
       image: req.body.image,
-      year_certificate: req.body.year_certificate,
-      letter_co2: req.body.letter_co2,
-      value_co2: req.body.value_co2,
-      letter_ep: req.body.letter_ep,
-      value_ep: req.body.value_ep,
-      year_certificate2: req.body.year_certificate2,
-      letter_co2_cert2: req.body.letter_co2_cert2,
-      value_co2_cert2: req.body.value_co2_cert2,
-      letter_ep_cert2: req.body.letter_ep_cert2,
-      value_ep_cert2: req.body.value_ep_cert2,
-      saving_co2_abs: req.body.saving_co2_abs,
-      saving_co2_percent: req.body.saving_co2_perc,
-      saving_ep_abs: req.body.saving_ep_abs,
-      saving_ep_percent: req.body.saving_ep_perc,
-      coordinates: req.body.coordinates,
-      point: req.body.point
+      year_certificate: req.body.yearCertificate,
+      letter_co2: req.body.letterCo2,
+      value_co2: req.body.valueCo2,
+      letter_ep: req.body.letterEp,
+      value_ep: req.body.valueEp,
+      year_certificate2: req.body.yearCertificate2,
+      letter_co2_cert2: req.body.letterCo2Cert2,
+      value_co2_cert2: req.body.valueCo2Cert2,
+      letter_ep_cert2: req.body.letterEpCert2,
+      value_ep_cert2: req.body.valueEpCert2,
+      saving_co2_abs: req.body.savingCo2Abs,
+      saving_co2_percent: req.body.savingCo2Perc,
+      saving_ep_abs: req.body.savingEpAbs,
+      saving_ep_percent: req.body.savingEpPerc
     };
     const userId = req.userId;
     const user = await Users.findOne({ where: { uid: userId } });
@@ -306,7 +304,7 @@ exports.getCEEBuildings = async (req, res) => {
   const userId = req.userId;
   const buildingToReturn = [];
   try {
-    const ceeBuildings = await UserCeeBuilding.findAll({
+    const buildings = await UserCEEBuilding.findAll({
       attributes: [],
       include: [
         {
@@ -319,16 +317,16 @@ exports.getCEEBuildings = async (req, res) => {
         },
       ],
     });
-    for (const ceeBuild of ceeBuildings) {
+    for (const build of buildings) {
       let condition = {
         [Op.and]: {
-          address: ceeBuild.address,
-          rc: ceeBuild.rc,
+          address: build.CeeBuilding.address,
+          rc: build.CeeBuilding.rc,
         },
       };
 
       buildingToReturn.push({
-        data_building: ceeBuild
+        data_building: build.building
       });
     }
     res.status(200).send(buildingToReturn);

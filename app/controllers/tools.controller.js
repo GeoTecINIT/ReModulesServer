@@ -68,7 +68,7 @@ exports.buildFilters = async (req, res) => {
 
   } catch (e) {
     res.status(500).send({
-      message:
+        message:
         err.message || "Some error occurred while retrieving filters.",
     });
   }

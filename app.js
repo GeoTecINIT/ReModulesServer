@@ -34,6 +34,15 @@ require("./app/routes/estate.routes")(app);
 require("./app/routes/typology.routes")(app);
 require("./app/routes/geodata.routes")(app);
 require("./app/routes/tools.routes")(app);
+require("./app/routes/case.routes")(app);
+require("./app/routes/qualification.routes")(app);
+require("./app/routes/tipology.routes")(app);
+require("./app/routes/cee_building.routes")(app);
+require("./app/routes/testimony.routes")(app);
+require("./app/routes/image.routes")(app);
+require("./app/routes/monitoring.routes")(app);
+require("./app/routes/file.routes")(app);
+require("./app/routes/variables.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
