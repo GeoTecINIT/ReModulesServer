@@ -101,3 +101,22 @@ exports.delete = (req, res) =>{
       });
     });
 }
+
+
+exports.getIdDwelling = (req, res) => {
+   const ID = req.params.id;
+
+   const condition = ID ? {cee_building_dwelling_id: ID} : null;
+
+   Monitoring.findAll({
+      where: condition
+   })
+   .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving user.",
+      });
+    });
+}

@@ -1,11 +1,4 @@
 const db = require("../models");
-const fs = require('fs');
-const readLine = require('readline');
-const { google } = require('googleapis');
-
-const CREDENTIALS = require('../../credentialsGoogleAPI.json');
-const SCOPES = ['https://www.googleapis.com/auth/drive'];
-const GOOGLE_API_FOLDER_ID = '1zqnnIRARCvdqfzpPe9g4VtC3Fkzf75QG';
 
 const Testimony = db.Testimony;
 
@@ -40,6 +33,7 @@ exports.getId = (req, res) => {
     });
 }
 
+
 exports.create = (req, res) => {
 
    let body = {
@@ -63,7 +57,7 @@ exports.create = (req, res) => {
        });
  }
  
- exports.update = (req, res) => {
+exports.update = (req, res) => {
  
     const body = {
         name: req.body.name,
@@ -88,9 +82,9 @@ exports.create = (req, res) => {
        });
      });
  
- }
+}
  
- exports.delete = (req, res) =>{
+exports.delete = (req, res) =>{
     const id = req.params.id;
     const condition = id ? {id: id} : null;
  
@@ -106,4 +100,22 @@ exports.create = (req, res) => {
          message: "Error delete Testimony with id=" + id,
        });
      });
- }
+}
+
+exports.getIdDwelling = (req, res) => {
+   const id = req.params.id;
+
+   const condition = id ? {cee_building_dwelling_id: id} : null;
+
+   Testimony.findOne({
+      where: condition
+   })
+   .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving Testimony.",
+      });
+    });
+}

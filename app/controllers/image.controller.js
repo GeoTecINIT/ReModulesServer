@@ -38,6 +38,7 @@ exports.getId = (req, res) => {
 exports.create = (req, res) => {
     let files = req.files.file;
     let testimonyId = req.body.testimony_id;
+    let guid = req.body.guid;
 
     console.log(files, req.body)
 
@@ -53,11 +54,11 @@ exports.create = (req, res) => {
 
         console.log('imagen n' + i + ' -> ', oldName, name, type, extension);
 
-        if(!fs.existsSync(folder + 'nueva_carpeta/')){
-            fs.mkdirSync(folder + 'nueva_carpeta/');
+        if(!fs.existsSync(folder + guid + '/')){
+            fs.mkdirSync(folder + guid + '/');
         }
 
-        let pathComplete = folder + 'nueva_carpeta/' + name + '.' + extension;
+        let pathComplete = folder + guid + '/' + name + '.' + extension;
 
         fs.rename(folder + oldName, pathComplete, (error) => {
          if(error){

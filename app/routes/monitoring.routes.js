@@ -8,5 +8,8 @@ module.exports = app => {
     router.put('/:id', controller.update);
     router.delete('/:id', controller.delete);
 
+    router.get('/idDwelling/:id', controller.getIdDwelling);
+
+
     app.use('/api/monitoring', router);
 };

@@ -35,21 +35,23 @@ exports.getId = (req, res) => {
 }
 
 exports.upload = (req, res) => {
-   console.log(req.files, req.body)
+   //console.log(req.files, req.body)
 
    let file = req.files.file
    let filePath = './uploads/' + file.path.substring(8); //nombre por defecto
-   let nameFile = file.originalFilename; //nombre que quiero ponerle
+   let nameFile = file.originalFilename.split('.')[0]; //nombre que quiero ponerle
+   let guid = req.body.guid;
+   let monitoring_id = req.body.id_monitoring;
 
    console.log(file);
-   console.log(file.path.substring(8))
+   //console.log(file.path.substring(8))
 
    let buffer = null;
    let body = {
       value: null,
       time_stamp: null,
-      uid: req.body.guid,
-      monitoring_id: req.body.id_monitoring
+      uid: guid,
+      monitoring_id: monitoring_id
    }
 
    try {
@@ -69,17 +71,21 @@ exports.upload = (req, res) => {
             res.send(data);
          })
          .catch((err) => {
-         res.status(500).send({
+         /*res.status(500).send({
             message:
               err.message || "Some error occurred while creating the File.",
-         });
+         });*/
       });
    } catch (error) {
       console.log(error);
       res.send(error);
    }
 
-   fs.writeFile('./uploads/filesMonitoring/' + nameFile, buffer, {flag: 'a+'}, (error) => {
+   if(!fs.existsSync('./uploads/filesMonitoring/' + guid + '/')){
+      fs.mkdirSync('./uploads/filesMonitoring/' + guid + '/');
+  }
+
+   fs.writeFile('./uploads/filesMonitoring/' + guid + '/' + nameFile + '.csv', buffer, {flag: 'a+'}, (error) => {
       if(error){
          console.log(error)
          res.send('File is not uploaded')
