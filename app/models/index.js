@@ -72,6 +72,14 @@ db.File = require("./file.model")(sequelize, Sequelize);
 db.Monitoring = require("./monitoring.model")(sequelize, Sequelize);
 db.Variables = require("./variables.model")(sequelize, Sequelize);
 
+//New model of tools
+db.Tools = require("./tools.model")(sequelize, Sequelize);
+db.LanguageDescriptions = require("./language_descriptions.model")(sequelize, Sequelize);
+db.ToolsImages = require("./tools_images.model")(sequelize, Sequelize);
+db.ToolsDocuments = require("./tools_documents.model")(sequelize, Sequelize);
+db.ConstraintsInfo = require("./constraints_info.model")(sequelize, Sequelize);
+db.ConstraintsTypes = require("./constraints_type.model")(sequelize, Sequelize);
+db.ConstraintsCategory = require("./constraints_category.model")(sequelize, Sequelize);
 
 db.Building.belongsToMany( db.User, {
   through: db.UserBuilding,
@@ -317,6 +325,12 @@ db.CeeBuilding.belongsTo(db.Qualification, {
 
 db.CeeBuilding.belongsTo(db.Tipology, {
   foreignKey: 'tipology_id'
+});
+
+db.Tools.belongsToMany(db.ConstraintsCategory, {
+  through: db.ConstraintsInfo,
+  foreignKey: "tool_id",
+  targetKey: "id"
 })
 
 module.exports = db;

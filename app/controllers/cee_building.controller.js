@@ -102,7 +102,8 @@ exports.create = (req, res) => {
       dwelling_id: req.body.dwelling_id,
       type_reform: req.body.type_reform,
       coordinates: req.body.coordinates,
-      point: req.body.point
+      point: req.body.point,
+      country: req.body.country
    }
 
    CeeBuilding.create(body)
@@ -127,7 +128,6 @@ exports.update = (req, res) => {
       tipology_id: req.body.tipology_id,
       case_id: req.body.case_id,
       year: req.body.year,
-      facade_picture: req.body.facade_picture,
       year_certificate: req.body.year_certificate,
       letter_co2: req.body.letter_co2,
       value_co2: req.body.value_co2,
@@ -142,16 +142,11 @@ exports.update = (req, res) => {
       saving_co2_percent: req.body.saving_co2_percent,
       saving_ep_abs: req.body.saving_ep_abs,
       saving_ep_percent: req.body.saving_ep_percent,
-      map_url: req.body.map_url,
-      current_regulations: req.body.current_regulations,
       reform_year: req.body.reform_year,
       number_floors: req.body.number_floors,
       number_dwellings: req.body.number_dwellings,
-      number_comercial_units: req.body.number_comercial_units,
       land_surface: req.body.land_surface,
       building_surface: req.body.building_surface,
-      heritage_buiding: req.body.heritage_buiding,
-      construction_quality: req.body.construction_quality,
       building_description: req.body.building_description,
       windows: req.body.windows,
       wall: req.body.wall,
@@ -159,7 +154,6 @@ exports.update = (req, res) => {
       shw: req.body.shw,
       aerothermal: req.body.aerothermal,
       intervention_description: req.body.intervention_description,
-      renovation_picture: req.body.renovation_picture,
       investment: req.body.investment,
       renovation_subsidies: req.body.renovation_subsidies,
       investment_square_meter: req.body.investment_square_meter,
@@ -185,19 +179,17 @@ exports.update = (req, res) => {
       potential_final_inv_m2_dw: req.body.potential_final_inv_m2_dw,
       potential_final_inv_month_dw: req.body.potential_final_inv_month_dw,
       dwelling_id: req.body.dwelling_id,
-      type_reform: req.body.type_reform,
-      coordinates: req.body.coordinates,
-      point: req.body.point
+      type_reform: req.body.type_reform
    }
-   const id = req.params.id;
+
+   const id = req.body.id;
+
    const condition = id ? {id: id} : null;
 
    CeeBuilding.update(body, {
       where: condition
-   }).then(() => {
-      res.send({
-         message: "Cee Building was updated successfully.",
-       });
+   }).then((data) => {
+      res.send(data);
     })
     .catch(() => {
       res.status(500).send({
@@ -218,9 +210,9 @@ exports.delete = (req, res) =>{
          message: "Cee Building was delete successfully.",
        });
     })
-    .catch(() => {
-      res.status(500).send({
-        message: "Error delete Cee Building with id=" + id,
-      });
-    });
+    .catch( (err) => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving envelope."
+        })
+     });
 }

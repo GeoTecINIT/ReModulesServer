@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -43,6 +44,7 @@ require("./app/routes/image.routes")(app);
 require("./app/routes/monitoring.routes")(app);
 require("./app/routes/file.routes")(app);
 require("./app/routes/variables.routes")(app);
+require("./app/routes/user_cee_building.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

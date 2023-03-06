@@ -239,6 +239,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     point: {
       type: Sequelize.JSON,
+    },
+    country: {
+      type: Sequelize.STRING
     }
   }, {schema: 'release',  timestamps: false, tableName: 'cee_building'});
 };

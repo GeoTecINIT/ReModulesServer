@@ -7,6 +7,8 @@ const ToolsSolutions = db.ToolsSolutions;
 const ToolsSteps = db.ToolsSteps;
 const ToolsStops = db.ToolsStops;
 const ToolsTypologies = db.ToolsTypologies;
+const ConstraintsTypes = db.ConstraintsTypes;
+const ConstraintsCategory = db.ConstraintsCategory;
 const Users = db.User;
 
 exports.getTools = (req, res) => {
@@ -73,6 +75,111 @@ exports.buildFilters = async (req, res) => {
     });
   }
 };
+
+exports.getProfiles = async (req, res) => {
+  try {
+    const profiles = await ToolsProfiles.findAll();
+    res.status(200).send({
+      profiles,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving profiles.",
+    });
+  }
+}
+
+exports.getContraintsTypes = async (req, res) => {
+  try {
+    const constraints_type = await ConstraintsTypes.findAll();
+    res.status(200).send({
+      constraints_type,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving constraints_type.",
+    });
+  }
+}
+
+exports.getContraintsCategory = async (req, res) => {
+  try {
+    const constraints_category = await ConstraintsCategory.findAll();
+    res.status(200).send({
+      constraints_category,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving constraints_category.",
+    });
+  }
+}
+
+exports.getSolutions = async (req, res) => {
+  try {
+    const solutions = await ToolsSolutions.findAll();
+    res.status(200).send({
+      solutions,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving constraints_type.",
+    });
+  }
+}
+
+exports.getTypologies = async (req, res) => {
+  try {
+    const typologies = await ToolsTypologies.findAll();
+    res.status(200).send({
+      typologies,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving constraints_type.",
+    });
+  }
+}
+
+exports.getStops = async (req, res) => {
+  try {
+    const stops = await ToolsStops.findAll();
+    res.status(200).send({
+      stops,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving constraints_type.",
+    });
+  }
+}
+
+exports.getSteps = async (req, res) => {
+  try {
+    const steps = await ToolsSteps.findAll();
+    res.status(200).send({
+      steps,
+    });
+
+  } catch (e) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving constraints_type.",
+    });
+  }
+}
 
 exports.getCountries = async (req, res) => {
   try {

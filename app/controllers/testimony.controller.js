@@ -66,7 +66,7 @@ exports.update = (req, res) => {
         video_url: req.body.video_url,
         cee_buidling_id: req.body.cee_buidling_id
     }
-    const id = req.params.id;
+    const id = req.body.id;
     const condition = id ? {id: id} : null;
  
     Testimony.update(body, {
